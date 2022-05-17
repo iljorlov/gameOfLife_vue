@@ -110,14 +110,20 @@ export default Vue.extend({
   watch: {
     numRows: {
       handler() {
-        this.generateRandomGrid()
+        if (!this.grid.length || !this.ctx) {
+          return
+        }
+        this.setGridPattern(JSON.parse(JSON.stringify(this.grid)))
         this.drawGrid()
       },
       immediate: true,
     },
     numCols: {
       handler() {
-        this.generateRandomGrid()
+        if (!this.grid.length || !this.ctx) {
+          return
+        }
+        this.setGridPattern(JSON.parse(JSON.stringify(this.grid)))
         this.drawGrid()
       },
       immediate: true,
@@ -300,8 +306,8 @@ export default Vue.extend({
         grid = generateEmptyGrid(this.numRows, this.numCols)
       } else {
         grid = generateEmptyGrid(pattern.length + 5, pattern[0].length + 5)
-        this.numRows = pattern.length + 5
-        this.numCols = pattern[0].length + 5
+        this.numRows = pattern.length + 10
+        this.numCols = pattern[0].length + 10
       }
       const offsetX = Math.floor((grid[0].length - pattern[0].length) / 2)
       const offsetY = Math.floor((grid.length - pattern.length) / 2)
