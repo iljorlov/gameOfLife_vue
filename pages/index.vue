@@ -28,7 +28,7 @@ export default Vue.extend({
         lifeDurationSeconds: 10,
         text: Math.random() > 0.6 ? '' : 'hello there',
         title: Math.random() > 0.6 ? '' : 'title',
-        type: 'INFO',
+        type: Math.random() > 0.6 ? 'INFO' : 'ERROR',
         uuid: '',
       }
       this.$store.commit('addNotification', notification)
