@@ -5,31 +5,13 @@
         :style="{ width: 'calc(100% - 32px)' }"
         class="w-full max-w-[400px] pr-4 pb-4"
       >
-        <div
-          v-for="notification in notifications"
-          :key="notification.uuid"
-          class="min-h-[64px] py-2 px-6 h-auto w-full mt-2 relative bg-white rounded shadow-md before:absolute before:content-[''] before:h-[calc(100%-20px)] before:left-2 before:w-[6px] before:bg-blue-500 before:top-1/2 before:-translate-y-1/2 before:rounded-md"
-        >
+        <TransitionGroup name="list" tag="div">
           <SingleNotification
-            ><div>
-              <div class="w-full h-full">
-                <div v-if="notification.title" class="font-medium">
-                  {{ notification.title }}
-                </div>
-                <div v-if="notification.text" class="text-slate-500">
-                  {{ notification.text }} Lorem ipsum dolor, sit amet
-                  consectetur adipisicing elit. Accusantium nesciunt in,
-                  voluptatibus similique consequatur libero?
-                </div>
-              </div>
-              <div
-                class="bg-black h-4 w-4 absolute top-[10px] right-2 cursor-pointer"
-                @click="removeNotification(notification.uuid)"
-              ></div>
-            </div>
-            ></SingleNotification
-          >
-        </div>
+            v-for="notification in notifications"
+            :key="notification.uuid"
+            :notification="notification"
+          />
+        </TransitionGroup>
       </div>
     </div>
   </div>
@@ -55,13 +37,18 @@ export default Vue.extend({
     }),
   },
   watch: {},
-
-  methods: {
-    removeNotification(uuid: string) {
-      this.$store.commit('removeNotification', uuid)
-    },
-  },
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="css" scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translate(30px, 8px) scaleY(0.9);
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+</style>

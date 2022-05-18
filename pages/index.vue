@@ -25,7 +25,7 @@ export default Vue.extend({
   methods: {
     addNotification() {
       const notification: NotificationType = {
-        lifeDurationSeconds: 1,
+        lifeDurationSeconds: 10,
         text: Math.random() > 0.6 ? '' : 'hello there',
         title: Math.random() > 0.6 ? '' : 'title',
         type: 'INFO',
