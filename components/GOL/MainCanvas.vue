@@ -2,12 +2,6 @@
   <div>
     <div>
       <div class="w-[400px] h-auto bg-pink-100 mx-auto mb-6">
-        <div>
-          <span>cellSize: {{ cellSize }}</span
-          ><button class="p-2 font-medium" @click="addCellSize(-1)">-</button
-          ><button class="p-2 font-medium" @click="addCellSize(1)">+</button>
-        </div>
-
         <button
           class="px-5 py-2 bg-blue-500 text-white rounded-sm"
           @click="startNewEmptyGrid"
@@ -75,7 +69,7 @@ export default Vue.extend({
       canvasHeight: 800,
       canvasWidth: 1280,
       ctx: null as CanvasRenderingContext2D | null,
-      cellSize: 10,
+      // cellSize: 10,
       skipSizeCheck: 2, //  2 since we need to ckeck both numRows and numCols: after every check we decrement the value.   //  0 means there is no need to skip
       grid: [] as number[][],
       hoveredCell: {
@@ -86,6 +80,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    cellSize(): number {
+      return this.$store.state.canvasState.cellSize
+    },
     selectedPattern(): number[][] {
       return this.$store.state.selectedPattern.pattern
     },
@@ -313,7 +310,6 @@ export default Vue.extend({
       }
       // console.log('nextgen')
 
-      // this.incrementGeneration()
       const gridCopy = JSON.parse(JSON.stringify(this.grid))
       for (let y = 0; y < this.grid.length; y++) {
         for (let x = 0; x < this.grid[0].length; x++) {
@@ -347,18 +343,6 @@ export default Vue.extend({
         this.ctx.canvas.width + 0.5,
         this.ctx.canvas.height + 0.5
       )
-    },
-    addNumCols(n: number) {
-      this.numCols += n
-    },
-    addNumRows(n: number) {
-      this.numRows += n
-    },
-    addCellSize(n: number) {
-      if (this.cellSize <= 1 && n < 0) {
-        return
-      }
-      this.cellSize += n
     },
     clearGrid() {
       this.grid = generateEmptyGrid(this.numRows, this.numCols)

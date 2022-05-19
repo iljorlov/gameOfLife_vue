@@ -1,7 +1,7 @@
 <template>
   <div
     :id="id"
-    class="flex flex-col w-64 m-auto items-center h-fit justify-center"
+    class="flex flex-col w-40 m-auto items-center h-fit justify-center"
   >
     <div class="w-full text-left mb-2">
       <label
@@ -18,11 +18,11 @@
           :style="`width: ${percentage}%`"
         ></div>
         <div
-          @mousedown="handleMouseDown"
           class="absolute h-4 flex items-center justify-center w-4 rounded-full bg-white shadow border border-gray-300 -ml-2 top-0 cursor-pointer"
+          :style="`left: ${percentage}%`"
           unselectable="on"
           onselectstart="return false;"
-          :style="`left: ${percentage}%`"
+          @mousedown="handleMouseDown"
         >
           <div class="relative -mt-2 w-1">
             <div
@@ -51,10 +51,10 @@
             </div>
           </div>
         </div>
-        <div class="absolute text-white -ml-1 bottom-0 left-0 -mb-6">
+        <div class="absolute text-white text-sm -ml-1 bottom-0 left-0 -mb-6">
           {{ min }}
         </div>
-        <div class="absolute text-white -mr-1 bottom-0 right-0 -mb-6">
+        <div class="absolute text-white text-sm -mr-1 bottom-0 right-0 -mb-6">
           {{ max }}
         </div>
       </div>
@@ -76,6 +76,10 @@ export default {
     },
     labelText: {
       type: String,
+      required: true,
+    },
+    initialValue: {
+      type: Number,
       required: true,
     },
   },
@@ -105,7 +109,8 @@ export default {
   },
   mounted() {
     this.id = this._uid
-    this.value = this.min
+    this.value = this.initialValue
+    this.percentage = ((this.min + this.max) / 100) * this.initialValue
     document.addEventListener('mouseup', this.handleMouseUp)
   },
   destroyed() {

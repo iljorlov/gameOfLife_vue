@@ -1,13 +1,20 @@
 <template>
   <div class="w-full h-full text-white p-4 flex justify-between space-x-8">
     <div class="flex flex-col justify-between h-full">
-      <div class="cursor-pointer flex items-col">
-        <div class="flex flex-col"></div>
+      <div class="cursor-pointer flex items-col space-x-6">
         <CustomSlider
           :label-text="`Speed`"
           :max="100"
           :min="1"
+          :initial-value="50"
           @newValue="(e) => handleSpeedChange(e)"
+        />
+        <CustomSlider
+          :label-text="`Cell Size`"
+          :max="20"
+          :min="2"
+          :initial-value="50"
+          @newValue="(e) => handleCellSizeChange(e)"
         />
       </div>
     </div>
@@ -33,9 +40,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import CustomSlider from './CustomSlider.vue'
+
 import { CanvasStateType } from '~/store/index'
 import { PatternType } from '~/patterns/patterns'
-import CustomSlider from './CustomSlider.vue'
+
 export default Vue.extend({
   components: {
     CustomSlider,
@@ -54,6 +63,9 @@ export default Vue.extend({
     },
     handleSpeedChange(e: number) {
       this.$store.commit('setCanvasSpeed', e)
+    },
+    handleCellSizeChange(e: number) {
+      this.$store.commit('setCellSize', e)
     },
   },
 })

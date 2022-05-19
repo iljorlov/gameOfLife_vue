@@ -5,7 +5,7 @@
     >
       <div
         id="controls-container"
-        class="h-32 transition-transform w-full bg-gray-800 rounded-lg mb-2 shadow-sm pointer-events-auto"
+        class="h-32 transition-transform w-full md:px-8 bg-gray-800 rounded-lg mb-2 shadow-lg pointer-events-auto"
       >
         <GameControls />
       </div>

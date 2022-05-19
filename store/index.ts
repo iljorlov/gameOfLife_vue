@@ -55,6 +55,9 @@ export const mutations: MutationTree<RootState> = {
   setCanvasSpeed: (state, newSpeed: number) => {
     state.canvasState.speed = newSpeed
   },
+  setCellSize: (state, newSize: number) => {
+    state.canvasState.cellSize = newSize
+  },
   incrementCurrentGeneration: (state) => {
     state.canvasState.currentGeneration++
   },
