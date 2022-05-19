@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { PatternType } from '~/patterns/patterns'
 import { mapState } from 'vuex'
 import generateEmptyGrid from '../../utils/generateEmptyGrid'
 import countNeighborsSeamless from '../../utils/countNeighborsSeamless'
@@ -41,20 +42,23 @@ export default Vue.extend({
       required: true,
       default: 'default',
     },
-    providedGrid: {
-      type: Array as () => number[][],
+    pattern: {
+      type: Object as () => PatternType,
       required: true,
     },
   },
   data() {
     return {
       ctx: null as CanvasRenderingContext2D | null,
-      cellSize: findCellSizePx(200, findMaxSide(this.providedGrid) + padding),
-      numRows: findMaxSide(this.providedGrid),
-      numCols: findMaxSide(this.providedGrid),
+      cellSize: findCellSizePx(
+        200,
+        findMaxSide(this.pattern.pattern) + padding
+      ),
+      numRows: findMaxSide(this.pattern.pattern),
+      numCols: findMaxSide(this.pattern.pattern),
       skipSizeCheck: 2,
       isRunning: false,
-      grid: JSON.parse(JSON.stringify(this.providedGrid)),
+      grid: JSON.parse(JSON.stringify(this.pattern.pattern)),
     }
   },
   computed: {
@@ -75,10 +79,7 @@ export default Vue.extend({
 
   methods: {
     handleSelectTemplate() {
-      this.$store.commit('setTemplate', {
-        grid: this.providedGrid,
-        name: this.canvasIdentifier,
-      })
+      this.$store.commit('setTemplate', this.pattern)
     },
     handleHover() {
       if (!this.isRunning) {
@@ -88,10 +89,10 @@ export default Vue.extend({
     },
     handleMouseLeave() {
       this.isRunning = false
-      this.setGridPattern(this.providedGrid)
+      this.setGridPattern(this.pattern.pattern)
     },
     initGrid() {
-      this.setGridPattern(this.providedGrid)
+      this.setGridPattern(this.pattern.pattern)
       this.getNextGeneration()
       this.drawGrid()
     },
@@ -137,8 +138,6 @@ export default Vue.extend({
           this.ctx?.fillRect(xOffset, yOffset, size, size)
         }
       }
-
-      // console.log('draw success')
     },
     async getNextGeneration() {
       if (!this.ctx) {
@@ -147,7 +146,6 @@ export default Vue.extend({
       if (!this.isRunning) {
         return
       }
-      // console.log('nextgen')
 
       const gridCopy = JSON.parse(JSON.stringify(this.grid))
       for (let y = 0; y < this.grid.length; y++) {
@@ -178,13 +176,10 @@ export default Vue.extend({
       )
     },
     setGridPattern(pattern: number[][]) {
-      // this.isRunning = false
       if (!this.ctx) {
         return []
       }
-
       let grid: number[][] = []
-
       if (pattern.length < this.numRows && pattern[0].length < this.numCols) {
         grid = generateEmptyGrid(this.numRows, this.numCols)
       } else {

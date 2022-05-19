@@ -3,29 +3,6 @@
     <div>
       <div class="w-[400px] h-auto bg-pink-100 mx-auto mb-6">
         <div>
-          <div>Current Gen: {{ currentGeneration }}</div>
-          <div>NumCols: {{ numCols }}</div>
-          <!-- <input
-            v-model="numCols"
-            type="range"
-            :max="150"
-            :min="1"
-            value="numCols"
-            step="1"
-          /> -->
-        </div>
-        <div>
-          <div>NumRows: {{ numRows }}</div>
-          <!-- <input
-            v-model="numRows"
-            type="range"
-            :max="150"
-            :min="1"
-            value="numRows"
-            step="1"
-          /> -->
-        </div>
-        <div>
           <span>cellSize: {{ cellSize }}</span
           ><button class="p-2 font-medium" @click="addCellSize(-1)">-</button
           ><button class="p-2 font-medium" @click="addCellSize(1)">+</button>
@@ -53,7 +30,7 @@
           class="px-5 py-2 bg-blue-500 text-white rounded-sm"
           @click="
             () => {
-              setGridPattern(selectedTemplate)
+              setGridPattern(selectedPattern)
               drawGrid()
             }
           "
@@ -62,13 +39,19 @@
         </button>
       </div>
     </div>
-    <!-- :height="cellSize * numRows"
-        :width="cellSize * numCols" -->
-    <div class="border cursor-pointer cursor w-fit p-1 h-fit mx-auto">
+
+    <div
+      :class="` border rounded ${
+        borderEnabled
+          ? 'border-2 border-slate-500'
+          : 'border-2 border-transparent'
+      } cursor-pointer cursor w-fit h-fit mx-auto`"
+    >
       <canvas
         :id="`canvas-main`"
-        :height="600"
-        :width="800"
+        class="h-full w-full"
+        :height="canvasHeight"
+        :width="canvasWidth"
         @mousemove="handleHover"
         @mouseleave="handleMouseLeave"
         @mousedown="handleMouseDown"
@@ -79,25 +62,22 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState } from 'vuex'
-
-import { patternList } from '../../patterns/patterns'
+// import { patternList } from '../../patterns/patterns'
 import generateEmptyGrid from '../../utils/generateEmptyGrid'
 import countNeighborsSeamless from '../../utils/countNeighborsSeamless'
+import countNeighborsBorder from '../../utils/countNeighborsBorder'
 import sleep from '../../utils/sleep'
 
 export default Vue.extend({
   name: 'MainCanvas',
   data() {
     return {
+      canvasHeight: 800,
+      canvasWidth: 1280,
       ctx: null as CanvasRenderingContext2D | null,
       cellSize: 10,
-      skipSizeCheck: 2, //  2 since we need to ckeck both numRows and numCols: after every check we decrement the value.
-      //  0 means there is no need to skip
-      currentGeneration: 0,
+      skipSizeCheck: 2, //  2 since we need to ckeck both numRows and numCols: after every check we decrement the value.   //  0 means there is no need to skip
       grid: [] as number[][],
-      defaultGrid: patternList.average,
-      showGrid: true,
       hoveredCell: {
         x: -1,
         y: -1,
@@ -106,21 +86,37 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapState({
-      isRunning: 'isRunning',
-      selectedTemplate: 'selectedTemplate',
-      templateName: 'templateName',
-    }),
+    selectedPattern(): number[][] {
+      return this.$store.state.selectedPattern.pattern
+    },
+    showGrid(): number[][] {
+      return this.$store.state.canvasState.showGrid
+    },
+    borderEnabled(): boolean {
+      return this.$store.state.canvasState.border
+    },
+    speed(): number {
+      return this.$store.state.canvasState.speed
+    },
+    selectedPatternName(): number[][] {
+      return this.$store.state.selectedPattern.details.name
+    },
+    isRunning(): boolean {
+      return this.$store.state.canvasState.isRunning
+    },
+    currentGeneration(): number {
+      return this.$store.state.canvasState.currentGeneration
+    },
     numRows(): number {
-      return Math.floor(600 / this.cellSize)
+      return Math.floor(this.canvasHeight / this.cellSize)
     },
     numCols(): number {
-      return Math.floor(800 / this.cellSize)
+      return Math.floor(this.canvasWidth / this.cellSize)
     },
   },
   watch: {
     numRows: {
-      handler(stringNext, stringPrev) {
+      handler(stringNext: string, stringPrev: string) {
         if (this.skipSizeCheck) {
           this.skipSizeCheck--
           // this.drawGrid()
@@ -142,7 +138,7 @@ export default Vue.extend({
       immediate: true,
     },
     numCols: {
-      handler(stringNext, stringPrev) {
+      handler(stringNext: string, stringPrev: string) {
         if (this.skipSizeCheck) {
           this.skipSizeCheck--
           // this.drawGrid()
@@ -169,9 +165,9 @@ export default Vue.extend({
       },
       deep: true,
     },
-    templateName: {
+    selectedPatternName: {
       handler() {
-        this.setGridPattern(this.selectedTemplate)
+        this.setGridPattern(this.selectedPattern)
       },
     },
   },
@@ -181,7 +177,7 @@ export default Vue.extend({
     const ctx = canvas.getContext('2d')!
     ctx.translate(0.5, 0.5)
     this.ctx = ctx
-    this.initGrid(this.selectedTemplate)
+    this.initGrid(this.selectedPattern)
   },
   methods: {
     toggleMode() {
@@ -194,7 +190,10 @@ export default Vue.extend({
         this.getNextGeneration()
       }
     },
-    initGrid(newGrid = patternList.barge2spaceship) {
+    initGrid(newGrid: number[][]) {
+      if (!newGrid) {
+        newGrid = this.selectedPattern
+      }
       this.setGridPattern(newGrid)
       this.getNextGeneration()
       this.drawGrid()
@@ -247,7 +246,6 @@ export default Vue.extend({
       if (!this.ctx) {
         return
       }
-
       this.clearCanvas()
       this.ctx!.fillStyle = 'black'
       const size = this.cellSize
@@ -315,11 +313,16 @@ export default Vue.extend({
       }
       // console.log('nextgen')
 
-      this.currentGeneration++
+      // this.incrementGeneration()
       const gridCopy = JSON.parse(JSON.stringify(this.grid))
       for (let y = 0; y < this.grid.length; y++) {
         for (let x = 0; x < this.grid[0].length; x++) {
-          const neighbors = countNeighborsSeamless(this.grid, x, y)
+          let neighbors
+          if (this.borderEnabled) {
+            neighbors = countNeighborsBorder(this.grid, x, y)
+          } else {
+            neighbors = countNeighborsSeamless(this.grid, x, y)
+          }
 
           if (neighbors > 3 || neighbors < 2) {
             gridCopy[y][x] = 0
@@ -329,8 +332,9 @@ export default Vue.extend({
         }
       }
       this.grid = gridCopy
-      await sleep(1)
+      await sleep(100 - this.speed)
       this.drawGrid()
+      this.incrementGeneration()
       this.getNextGeneration()
     },
     clearCanvas() {
@@ -376,13 +380,14 @@ export default Vue.extend({
     },
     startNewEmptyGrid() {
       const grid: number[][] = generateEmptyGrid(this.numRows, this.numCols)
-      this.currentGeneration = 0
+
+      this.resetGeneration()
       this.grid = grid
       this.$store.commit('pauseCanvas')
       this.drawGrid()
     },
     setGridPattern(pattern: number[][]) {
-      this.currentGeneration = 0
+      this.resetGeneration()
       // this.isRunning = false
       if (!this.ctx) {
         return []
@@ -412,6 +417,12 @@ export default Vue.extend({
       }
       this.grid = grid
       this.drawGrid()
+    },
+    incrementGeneration() {
+      this.$store.commit('incrementCurrentGeneration')
+    },
+    resetGeneration() {
+      this.$store.commit('resetCurrentGeneration')
     },
   },
 })

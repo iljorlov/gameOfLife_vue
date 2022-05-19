@@ -1,9 +1,12 @@
 <template>
-  <div class="w-full fixed left-0 bottom-0">
-    <div class="w-full relative flex justify-end">
+  <div class="z-[400] w-full h-0 fixed left-0 bottom-0">
+    <div
+      id="deb"
+      class="h-screen flex justify-end items-end -translate-y-[100vh] ml-auto pointer-events-none top-0 w-full max-w-[320px] md:max-w-[400px]"
+    >
       <div
         :style="{ width: 'calc(100% - 32px)' }"
-        class="w-full max-w-[400px] pr-4 pb-4"
+        class="w-full relative pr-4 pb-4"
       >
         <TransitionGroup name="list" tag="div">
           <SingleNotification
@@ -21,15 +24,9 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import SingleNotification from './SingleNotification.vue'
-import { NotificationType } from '~/store'
 export default Vue.extend({
   components: {
     SingleNotification,
-  },
-  data() {
-    return {
-      idsToDelete: [] as string[],
-    }
   },
   computed: {
     ...mapState({

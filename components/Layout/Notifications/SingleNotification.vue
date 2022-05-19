@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`min-h-[64px] py-2 px-6 h-auto w-full mt-2 relative bg-white rounded shadow-md before:absolute before:content-[''] before:h-[calc(100%-20px)] before:left-2 before:w-[6px]  ${
+    :class="`z-[400] min-h-[64px] pointer-events-auto py-2 px-6 h-auto w-full mt-2 relative bg-white rounded shadow-md before:absolute before:content-[''] before:h-[calc(100%-20px)] before:left-2 before:w-[6px]  ${
       notification.type === 'ERROR'
         ? 'before:bg-red-500'
         : notification.type === 'SUCCESS'
@@ -17,7 +17,7 @@
       </div>
     </div>
     <div
-      class="h-5 w-5 hover:bg-slate-100 rounded transition-colors absolute top-[10px] right-2 cursor-pointer"
+      class="h-5 w-5 text-slate-500 hover:bg-slate-100 rounded transition-colors absolute top-[10px] right-2 cursor-pointer"
       @click="removeNotification(notification.uuid)"
     >
       <XIcon />

@@ -4,14 +4,14 @@
       class="px-2 bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700"
     >
       <div
-        class="container flex flex-wrap max-w-[1280px] items-center justify-between mx-auto"
+        class="container min-h-[58px] flex flex-wrap max-w-[1280px] items-center justify-between mx-auto"
       >
         <a href="#" class="flex items-center">
-          <img
+          <!-- <img
             src="/docs/images/logo.svg"
             class="h-6 mr-3 sm:h-10"
             alt="Flowbite Logo"
-          />
+          /> -->
           <span
             class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
             >Flowbite</span

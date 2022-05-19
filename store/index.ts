@@ -1,5 +1,7 @@
+import { ActionTree, MutationTree } from 'vuex'
 import { v4 as uuidv4 } from 'uuid'
-import { patternList } from '../patterns/patterns'
+import { patternList, PatternType } from '../patterns/patterns'
+// import { canvasState } from './canvasState'
 
 export type NotificationType = {
   lifeDurationSeconds: number
@@ -8,55 +10,72 @@ export type NotificationType = {
   type: 'ERROR' | 'SUCCESS' | 'INFO'
   uuid: string
 }
-
-export const state = () => {
-  return {
-    isRunning: false,
-    templateName: 'main',
-    selectedTemplate: patternList.alternatepentadecathlononsnacker,
-    notifications: [] as NotificationType[],
-  }
+export type CanvasStateType = {
+  isRunning: boolean
+  currentGeneration: number
+  speed: number
+  cellSize: number
+  showGrid: boolean
+  border: boolean
+}
+type StateType = {
+  canvasState: CanvasStateType
+  selectedPattern: PatternType
+  notifications: NotificationType[]
 }
 
-export type StateType = ReturnType<typeof state>
+export const state = (): StateType => ({
+  canvasState: {
+    isRunning: false,
+    currentGeneration: 0,
+    cellSize: 10,
+    speed: 100,
+    showGrid: true,
+    border: false,
+  },
+  selectedPattern: patternList[0] as PatternType,
+  notifications: [] as NotificationType[],
+})
 
-export const mutations = {
-  startCanvas: (state: StateType) => {
-    state.isRunning = true
+export type RootState = ReturnType<typeof state>
+
+export const mutations: MutationTree<RootState> = {
+  startCanvas: (state) => {
+    state.canvasState.isRunning = true
   },
-  pauseCanvas: (state: StateType) => {
-    state.isRunning = false
+  pauseCanvas: (state) => {
+    state.canvasState.isRunning = false
   },
-  setTemplate: (
-    state: StateType,
-    newTemplate: {
-      grid: number[][]
-      name: string
-    }
-  ) => {
-    state.selectedTemplate = newTemplate.grid
-    state.templateName = newTemplate.name
+  toggleGrid: (state) => {
+    state.canvasState.showGrid = !state.canvasState.showGrid
   },
-  addNotification: (state: StateType, notification: NotificationType) => {
+  toggleBorder: (state) => {
+    state.canvasState.border = !state.canvasState.border
+  },
+  setCanvasSpeed: (state, newSpeed: number) => {
+    state.canvasState.speed = newSpeed
+  },
+  incrementCurrentGeneration: (state) => {
+    state.canvasState.currentGeneration++
+  },
+  resetCurrentGeneration: (state) => {
+    state.canvasState.currentGeneration = 0
+  },
+  setTemplate: (state, newTemplate: PatternType) => {
+    state.selectedPattern = newTemplate
+  },
+  addNotification: (state, notification: NotificationType) => {
     notification.uuid = uuidv4()
     state.notifications.push(notification)
   },
-  removeNotification: (state: StateType, uuid: string) => {
+  removeNotification: (state: RootState, uuid: string) => {
     state.notifications = state.notifications.filter(
       (item) => item.uuid !== uuid
     )
   },
-
-  // updateFoodData: (state, data) => {
-  //   state.fooddata = data
-  // },
-  // addToCart: (state, formOutput) => {
-  //   formOutput.id = uuidv4()
-  //   state.cart.push(formOutput)
-  // },
 }
 
-export const actions = {
+export const actions: ActionTree<RootState, RootState> = {
   // async getFoodData({ state, commit }) {
   //   if (state.fooddata.length) return
   //   try {
@@ -79,8 +98,8 @@ export const actions = {
   // },
 }
 
-// export const getters = {
-//   getterValue: (state) => {
-//     return state.value
-//   },
-// }
+export const getters = {
+  // getterValue: (state) => {
+  //   return state.value
+  // },
+}

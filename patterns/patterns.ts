@@ -1,3 +1,14 @@
+export type GOLPatternType = number[][]
+
+export type PatternType = {
+  pattern: GOLPatternType
+  details: {
+    name: string
+    year: string
+    period: number
+  }
+}
+
 // achimsp11 A period 11 oscillator discovered on August 4, 1994
 export const achimsp11 = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -216,13 +227,56 @@ const twoTriangles = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-export const patternList = {
-  achimsp11,
-  barge2spaceship,
-  alternatepentadecathlononsnacker,
-  achimsp144,
-  twoTriangles,
-  average,
-}
+export const patternList: PatternType[] = [
+  {
+    pattern: achimsp11,
+    details: {
+      name: 'achimsp11',
+      period: 0,
+      year: '',
+    },
+  },
+  {
+    pattern: barge2spaceship,
+    details: {
+      name: 'barge2spaceship',
+      period: 0,
+      year: '',
+    },
+  },
+  {
+    pattern: alternatepentadecathlononsnacker,
+    details: {
+      name: 'alternatepentadecathlononsnacker',
+      period: 0,
+      year: '',
+    },
+  },
+  {
+    pattern: achimsp144,
+    details: {
+      name: 'achimsp144',
+      period: 0,
+      year: '',
+    },
+  },
+
+  {
+    pattern: twoTriangles,
+    details: {
+      name: 'twoTriangles',
+      period: 0,
+      year: '',
+    },
+  },
+  {
+    pattern: average,
+    details: {
+      name: 'average',
+      period: 0,
+      year: '',
+    },
+  },
+]
 
 export default {}

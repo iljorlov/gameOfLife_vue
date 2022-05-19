@@ -1,13 +1,15 @@
 <template>
-  <div class="grid grid-cols-3 gap-y-6 gap-x-8 my-12">
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8 mt-12 pb-48"
+  >
     <div
-      v-for="pattern in patterns"
-      :key="pattern[0]"
+      v-for="pattern in patternList"
+      :key="pattern.details.name"
       class="overflow-hidden border-2"
     >
       <TemplateCanvas
-        :canvas-identifier="pattern[0]"
-        :provided-grid="pattern[1]"
+        :canvas-identifier="pattern.details.name"
+        :pattern="pattern"
       />
     </div>
   </div>
@@ -20,9 +22,10 @@ export default {
   components: {
     TemplateCanvas,
   },
+
   data() {
     return {
-      patterns: Object.entries(patternList),
+      patternList,
     }
   },
   methods: {
