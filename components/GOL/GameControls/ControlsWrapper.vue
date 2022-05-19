@@ -3,11 +3,13 @@
     <div
       class="h-[calc(100vh)] px-2 xl:px-0 w-full sticky top-0 flex items-end"
     >
-      <div
-        id="controls-container"
-        class="h-32 transition-transform w-full md:px-8 bg-gray-800 rounded-lg mb-2 shadow-lg pointer-events-auto"
-      >
-        <GameControls />
+      <div class="md:scale-[0.8] 2xl:scale-[0.9] transition-transform w-full">
+        <div
+          id="controls-container"
+          class="h-32 transition-transform w-full md:px-8 bg-gray-800 rounded-lg mb-4 shadow-lg pointer-events-auto"
+        >
+          <GameControls />
+        </div>
       </div>
     </div>
   </div>
@@ -34,13 +36,20 @@ export default Vue.extend({
       const controlsContainer = document.getElementById('controls-container')
       const headerOffsetY = Math.abs(header.getBoundingClientRect().y)
       if (headerOffsetY < 58) {
-        controlsContainer!.style.transform = 'translateY(-58px)'
+        controlsContainer!.classList.add('translate58')
+        // controlsContainer!.style.transform = 'translateY(-58px)'
       } else {
-        controlsContainer!.style.transform = 'translateY(0)'
+        controlsContainer!.classList.remove('translate58')
+        // console.log(controlsContainer?.style.transform)
+        // controlsContainer!.style.transform = 'translateY(0)'
       }
     },
   },
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.translate58 {
+  transform: translateY(-58px);
+}
+</style>

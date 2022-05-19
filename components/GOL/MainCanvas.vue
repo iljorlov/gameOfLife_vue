@@ -1,5 +1,5 @@
-// todo: fix error onhover when lowering cellSize
-
+// todo: fix error onhover when lowering cellSize // todo: canvas is not being
+redrawn after resize
 <template>
   <div>
     <div>
@@ -37,11 +37,12 @@
     </div>
 
     <div
-      :class="` border rounded ${
+      id="canvas-wrapper"
+      :class="` border  rounded ${
         borderEnabled
           ? 'border-2 border-slate-500'
           : 'border-2 border-transparent'
-      } cursor-pointer cursor w-fit h-fit mx-auto`"
+      } cursor-pointer cursor w-full h-full `"
     >
       <canvas
         :id="`canvas-main`"
@@ -58,7 +59,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-// import { patternList } from '../../patterns/patterns'
 import generateEmptyGrid from '../../utils/generateEmptyGrid'
 import countNeighborsSeamless from '../../utils/countNeighborsSeamless'
 import countNeighborsBorder from '../../utils/countNeighborsBorder'
@@ -68,10 +68,9 @@ export default Vue.extend({
   name: 'MainCanvas',
   data() {
     return {
-      canvasHeight: 800,
-      canvasWidth: 1280,
+      canvasHeight: 0,
+      canvasWidth: 0,
       ctx: null as CanvasRenderingContext2D | null,
-      // cellSize: 10,
       skipSizeCheck: 2, //  2 since we need to ckeck both numRows and numCols: after every check we decrement the value.   //  0 means there is no need to skip
       grid: [] as number[][],
       hoveredCell: {
@@ -118,12 +117,10 @@ export default Vue.extend({
       handler(stringNext: string, stringPrev: string) {
         if (this.skipSizeCheck) {
           this.skipSizeCheck--
-          // this.drawGrid()
           return
         }
         const next = parseInt(stringNext)
         const prev = parseInt(stringPrev)
-
         if (!this.grid.length || !this.ctx) {
           return
         }
@@ -140,7 +137,6 @@ export default Vue.extend({
       handler(stringNext: string, stringPrev: string) {
         if (this.skipSizeCheck) {
           this.skipSizeCheck--
-          // this.drawGrid()
           return
         }
         const next = parseInt(stringNext)
@@ -148,7 +144,6 @@ export default Vue.extend({
         if (!this.grid.length || !this.ctx) {
           return
         }
-
         if (next > prev) {
           this.setGridPattern(JSON.parse(JSON.stringify(this.grid)))
         } else {
@@ -157,6 +152,17 @@ export default Vue.extend({
         this.drawGrid()
       },
       immediate: true,
+    },
+    canvasWidth: {
+      handler() {
+        const ratio = 1280 / 720
+        this.canvasHeight = this.canvasWidth / ratio
+      },
+    },
+    canvasHeigth: {
+      handler() {
+        this.drawGrid()
+      },
     },
     hoveredCell: {
       handler(): void {
@@ -172,11 +178,30 @@ export default Vue.extend({
   },
 
   mounted() {
+    window.addEventListener('resize', () => {
+      const canvasWrapper = document.getElementById('canvas-wrapper')
+      if (canvasWrapper) {
+        this.canvasWidth = canvasWrapper.getBoundingClientRect().width
+      }
+    })
+    const canvasWrapper = document.getElementById('canvas-wrapper')
+    if (canvasWrapper) {
+      this.canvasWidth = canvasWrapper.getBoundingClientRect().width
+    }
+
     const canvas = document!.getElementById(`canvas-main`)! as HTMLCanvasElement
     const ctx = canvas.getContext('2d')!
     ctx.translate(0.5, 0.5)
     this.ctx = ctx
     this.initGrid(this.selectedPattern)
+  },
+  destroyed() {
+    window.removeEventListener('resize', () => {
+      const canvasWrapper = document.getElementById('canvas-wrapper')
+      if (canvasWrapper) {
+        this.canvasWidth = canvasWrapper.getBoundingClientRect().width
+      }
+    })
   },
   methods: {
     toggleMode() {
@@ -212,33 +237,50 @@ export default Vue.extend({
     },
     handleHover(e: MouseEvent) {
       // handles mouse hover and down
-      const x = e.offsetX + 0
-      const y = e.offsetY + 0
-      const xPos = Math.floor(x / this.cellSize)
-      const yPos = Math.floor(y / this.cellSize)
+      try {
+        const rect = this.ctx!.canvas.getBoundingClientRect()
 
-      if (
-        this.hoveredCell.x === xPos &&
-        this.hoveredCell.y === yPos &&
-        this.hoveredCell.changed
-      ) {
-        return
-      }
-      this.hoveredCell.changed = false
-      this.hoveredCell.x = xPos
-      this.hoveredCell.y = yPos
+        // const x = e.clientX - offX
+        // const y = e.clientY - offY
+        const x = e.clientX - rect.x
+        const y = e.clientY - rect.y
+        console.log(y)
 
-      if (e.buttons === 1) {
+        const xPos = Math.floor(x / this.cellSize)
+        const yPos = Math.floor(y / this.cellSize)
+
         if (
-          this.hoveredCell.x >= 0 &&
-          this.hoveredCell.y >= 0 &&
-          !this.hoveredCell.changed
+          this.hoveredCell.x === xPos &&
+          this.hoveredCell.y === yPos &&
+          this.hoveredCell.changed
         ) {
-          this.grid[this.hoveredCell.y][this.hoveredCell.x] =
-            this.grid[this.hoveredCell.y][this.hoveredCell.x] === 0 ? 1 : 0
-          this.hoveredCell.changed = true
-          this.drawGrid()
+          return
         }
+        this.hoveredCell.changed = false
+        this.hoveredCell.x = xPos
+        this.hoveredCell.y = yPos
+
+        if (e.buttons === 1) {
+          if (
+            this.hoveredCell.x >= 0 &&
+            this.hoveredCell.y >= 0 &&
+            !this.hoveredCell.changed
+          ) {
+            this.grid[this.hoveredCell.y][this.hoveredCell.x] =
+              this.grid[this.hoveredCell.y][this.hoveredCell.x] === 0 ? 1 : 0
+            this.hoveredCell.changed = true
+            this.drawGrid()
+          }
+        }
+      } catch (error) {
+        const notification = {
+          lifeDurationSeconds: 6,
+          text: 'Error',
+          title: 'Hover fail',
+          type: 'ERROR',
+          uuid: '',
+        }
+        this.$store.commit('addNotification', notification)
       }
     },
     drawGrid() {
