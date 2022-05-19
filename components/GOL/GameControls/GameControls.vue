@@ -6,14 +6,14 @@
           :label-text="`Speed`"
           :max="100"
           :min="1"
-          :initial-value="50"
+          :initial-value="canvasState.speed"
           @newValue="(e) => handleSpeedChange(e)"
         />
         <CustomSlider
           :label-text="`Cell Size`"
           :max="20"
           :min="2"
-          :initial-value="50"
+          :initial-value="20"
           @newValue="(e) => handleCellSizeChange(e)"
         />
       </div>

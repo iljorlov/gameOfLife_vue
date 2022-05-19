@@ -64,6 +64,16 @@
 
 <script lang="ts">
 // import Vue from 'vue'
+
+declare module 'vue/types/vue' {
+  interface Vue {
+    _uid: any
+    id: string | null
+    value: number
+    isDragging: boolean
+    percentage: number
+  }
+}
 export default {
   props: {
     min: {
@@ -84,7 +94,12 @@ export default {
     },
   },
 
-  data() {
+  data(): {
+    id: string | null
+    value: number
+    isDragging: boolean
+    percentage: number
+  } {
     return {
       id: null,
       value: 0,
@@ -124,7 +139,7 @@ export default {
       this.isDragging = false
     },
     handleMouseMove(e: MouseEvent) {
-      const slider = document.getElementById(this.id)
+      const slider = document.getElementById(this.id ? this.id : `${this.id}`)
 
       if (slider) {
         const xPos = e.x - slider.getBoundingClientRect().left

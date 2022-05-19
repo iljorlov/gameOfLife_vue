@@ -1,3 +1,5 @@
+// todo: fix error onhover when lowering cellSize
+
 <template>
   <div>
     <div>
@@ -387,8 +389,8 @@ export default Vue.extend({
           pattern.length + extraSpace,
           pattern[0].length + extraSpace
         )
-        this.numRows = pattern.length + extraSpace
-        this.numCols = pattern[0].length + extraSpace
+        // this.numRows = pattern.length + extraSpace
+        // this.numCols = pattern[0].length + extraSpace
         this.skipSizeCheck = 2
       }
       const offsetX = Math.floor((grid[0].length - pattern[0].length) / 2)
