@@ -7,22 +7,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState } from 'vuex'
 import MainCanvas from '../components/GOL/MainCanvas.vue'
 import TemplatesGrid from '../components/GOL/TemplatesGrid.vue'
 import ControlsContainer from '../components/GOL/GameControls/ControlsWrapper.vue'
 import { NotificationType } from '~/store/index'
+
 export default Vue.extend({
   name: 'IndexPage',
   components: {
     MainCanvas,
     TemplatesGrid,
     ControlsContainer,
-  },
-  computed: {
-    ...mapState({
-      notifications: 'notifications',
-    }),
   },
   methods: {
     addNotification() {
