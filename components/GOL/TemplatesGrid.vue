@@ -7,10 +7,12 @@
       :key="pattern.details.name"
       class="overflow-hidden border-2"
     >
-      <TemplateCanvas
-        :canvas-identifier="pattern.details.name"
-        :pattern="pattern"
-      />
+      <div @click="handleTemplateSelect" class="h-fit w-fit mx-auto">
+        <TemplateCanvas
+          :canvas-identifier="pattern.details.name"
+          :pattern="pattern"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -30,6 +32,10 @@ export default {
   },
   methods: {
     provideCanvasContext() {},
+    handleTemplateSelect() {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      this.$store.commit('canvasState/startCanvas')
+    },
   },
 }
 </script>

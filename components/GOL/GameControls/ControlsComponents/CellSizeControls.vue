@@ -1,7 +1,7 @@
 <template>
   <CustomSlider
     :label-text="`Cell Size`"
-    :max="20"
+    :max="25"
     :min="2"
     :initial-value="cellSize"
     @newValue="(e) => handleCellSizeChange(e)"

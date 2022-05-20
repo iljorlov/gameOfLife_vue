@@ -1,6 +1,5 @@
 import { ActionTree, MutationTree } from 'vuex'
 import { patternList, PatternType } from '../patterns/patterns'
-import { v4 as uuidv4 } from 'uuid'
 
 export const state = () => ({
   isRunning: false,
@@ -57,17 +56,4 @@ export const mutations: MutationTree<CanvasStateType, CanvasStateType> = {
   setTemplate: (state: CanvasStateType, newTemplate: PatternType) => {
     state.selectedPattern = newTemplate
   },
-  // clearCanvas: (state: CanvasStateType) => {
-  //   const clearTemplate: PatternType = {
-  //     details: {
-  //       name: uuidv4(), // we need to set a new name since there is a watcher in canvas checking if template name has changed
-  //       period: 0,
-  //       year: '0000',
-  //     },
-  //     pattern: [[0]],
-  //   }
-  //   state.isRunning = false
-  //   state.currentGeneration = 0
-  //   state.selectedPattern = clearTemplate
-  // },
 }

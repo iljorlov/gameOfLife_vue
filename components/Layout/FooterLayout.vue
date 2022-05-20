@@ -3,11 +3,17 @@
     <div
       class="max-w-[1280px] p-4 shrink-0 mx-auto md:flex md:items-center md:justify-between md:p-6"
     >
-      <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"
-        >© 2022
-        <a href="https://flowbite.com" class="hover:underline">Flowbite™</a>.
-        All Rights Reserved.
-      </span>
+      <a href="https://github.com/iljorlov" target="_blank"
+        ><div
+          class="text-sm cursor-pointer w-fit sm:text-center dark:text-gray-400 flex items-center justify-between space-x-2"
+        >
+          <img class="h-6 w-6 rounded-sm" src="~/assets/GitHub-Mark.png" />
+          <span class="text-gray-200">iljorlov</span>
+          <!-- © 2022 -->
+          <!-- <a href="https://flowbite.com" class="hover:underline">Flowbite™</a>. -->
+          <!-- All Rights Reserved. -->
+        </div></a
+      >
       <ul
         class="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0"
       >

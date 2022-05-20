@@ -1,39 +1,50 @@
 // todo: canvas is not being redrawn after resize
 <template>
-  <div class="px-2">
-    <div>
-      <div class="w-[400px] h-auto bg-pink-100 mx-auto mb-6">
-        <button
-          class="px-5 py-2 bg-blue-500 text-white rounded-sm"
-          @click="generateRandomGrid"
-        >
-          random
-        </button>
-      </div>
-    </div>
-
+  <div class="p-2 2xl:px-0">
     <div
       id="canvas-wrapper"
-      :class="` border  rounded-sm ${
+      :class="`border rounded-sm ${
         borderEnabled
           ? 'border-2 border-slate-500'
           : 'border-2 border-transparent'
-      } cursor-pointer cursor w-full h-full `"
+      } cursor-pointer cursor w-full h-full`"
     >
       <canvas
         :id="`canvas-main`"
+        :style="{ transform: `scale(${ctx ? '1' : '0'})` }"
+        :class="`${
+          ctx ? 'block' : 'hidden'
+        } transition-all delay-700 duration-1000`"
         :height="canvasHeight"
         :width="canvasWidth"
         @mousemove="handleHover"
         @mouseleave="handleMouseLeave"
         @mousedown="handleMouseDown"
       />
+      <div
+        :class="`${
+          ctx ? 'hidden' : 'h-[80vh]  flex items-center justify-center'
+        }`"
+      >
+        <div class="h-16 w-16 relative animate-spin">
+          <div
+            class="bg-slate-800/40 h-6 w-6 absolute top-0 left-1/2 -translate-x-1/2 rounded-full"
+          ></div>
+          <div
+            class="bg-slate-800/40 h-6 w-6 absolute bottom-0 -left-1 rounded-full"
+          ></div>
+          <div
+            class="bg-slate-800/40 h-6 w-6 absolute bottom-0 -right-1 rounded-full"
+          ></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+// import TemplateCanvas from './TemplateCanvas.vue'
 import generateEmptyGrid from '../../utils/generateEmptyGrid'
 import countNeighborsSeamless from '../../utils/countNeighborsSeamless'
 import countNeighborsBorder from '../../utils/countNeighborsBorder'
@@ -41,6 +52,7 @@ import sleep from '../../utils/sleep'
 
 export default Vue.extend({
   name: 'MainCanvas',
+  // components: { TemplateCanvas },
   data() {
     return {
       canvasHeight: 0,
@@ -63,7 +75,7 @@ export default Vue.extend({
     selectedPattern(): number[][] {
       return this.$store.state.canvasState.selectedPattern.pattern
     },
-    showGrid(): number[][] {
+    showGrid(): boolean {
       return this.$store.state.canvasState.showGrid
     },
     borderEnabled(): boolean {
@@ -72,7 +84,7 @@ export default Vue.extend({
     speed(): number {
       return this.$store.state.canvasState.speed
     },
-    selectedPatternName(): number[][] {
+    selectedPatternName(): string {
       return this.$store.state.canvasState.selectedPattern.details.name
     },
     isRunning(): boolean {
@@ -97,7 +109,13 @@ export default Vue.extend({
       return this.$store.state.canvasState.randomToggle
     },
   },
+
   watch: {
+    showGrid: {
+      handler() {
+        this.drawGrid()
+      },
+    },
     numRows: {
       handler(stringNext: string, stringPrev: string) {
         if (this.skipSizeCheck) {
@@ -116,7 +134,7 @@ export default Vue.extend({
         }
         this.drawGrid()
       },
-      immediate: true,
+      // immediate: true,
     },
     numCols: {
       handler(stringNext: string, stringPrev: string) {
@@ -136,7 +154,7 @@ export default Vue.extend({
         }
         this.drawGrid()
       },
-      immediate: true,
+      // immediate: true,
     },
     canvasWidth: {
       handler() {
@@ -146,9 +164,8 @@ export default Vue.extend({
     },
     canvasHeigth: {
       handler() {
-        this.drawGrid()
+        // this.handleHover(null)
       },
-      immediate: true,
     },
     hoveredCell: {
       handler(): void {
@@ -258,7 +275,6 @@ export default Vue.extend({
     handleHover(e: MouseEvent) {
       // handles mouse hover and down
       try {
-        // const canvasWrapper = document.getElementById('canvas-wrapper')
         const rect = this.ctx!.canvas.getBoundingClientRect()
         const x = e.clientX - rect.x
         const y = e.clientY - rect.y
@@ -345,6 +361,7 @@ export default Vue.extend({
         }
       }
 
+      // drawing hovered cell
       if (
         this.hoveredCell.x >= 0 &&
         this.hoveredCell.x < this.grid[0].length &&
@@ -363,7 +380,7 @@ export default Vue.extend({
         )
         this.ctx!.fillStyle = 'black'
       }
-      // console.log('draw success')
+      // console.log('ok')
     },
     async getNextGeneration() {
       if (!this.ctx) {
@@ -372,7 +389,6 @@ export default Vue.extend({
       if (!this.isRunning) {
         return
       }
-      // console.log('nextgen')
 
       const gridCopy = JSON.parse(JSON.stringify(this.grid))
       for (let y = 0; y < this.grid.length; y++) {
@@ -440,7 +456,6 @@ export default Vue.extend({
     },
     setGridPattern(pattern: number[][]) {
       this.resetGeneration()
-      // this.isRunning = false
       if (!this.ctx) {
         return []
       }
@@ -455,8 +470,6 @@ export default Vue.extend({
           pattern.length + extraSpace,
           pattern[0].length + extraSpace
         )
-        // this.numRows = pattern.length + extraSpace
-        // this.numCols = pattern[0].length + extraSpace
         this.skipSizeCheck = 2
       }
       const offsetX = Math.floor((grid[0].length - pattern[0].length) / 2)
@@ -480,4 +493,20 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.animateCanvasIn {
+  animation-duration: 0.4s;
+  animation-name: slidein;
+}
+@keyframes fadeInZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+</style>
