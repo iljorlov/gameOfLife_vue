@@ -48,6 +48,7 @@ import Vue from 'vue'
 import generateEmptyGrid from '../../utils/generateEmptyGrid'
 import countNeighborsSeamless from '../../utils/countNeighborsSeamless'
 import countNeighborsBorder from '../../utils/countNeighborsBorder'
+import mergeTwoGrids from '~/utils/mergeTwoGrids'
 import sleep from '../../utils/sleep'
 
 export default Vue.extend({
@@ -58,7 +59,6 @@ export default Vue.extend({
       canvasHeight: 0,
       canvasWidth: 0,
       ctx: null as CanvasRenderingContext2D | null,
-      skipSizeCheck: 2, //  2 since we need to ckeck both numRows and numCols: after every check we decrement the value.   //  0 means there is no need to skip
       grid: [] as number[][],
       hoveredCell: {
         x: -1,
@@ -116,55 +116,16 @@ export default Vue.extend({
         this.drawGrid()
       },
     },
-    numRows: {
-      handler(stringNext: string, stringPrev: string) {
-        if (this.skipSizeCheck) {
-          this.skipSizeCheck--
-          return
-        }
-        const next = parseInt(stringNext)
-        const prev = parseInt(stringPrev)
-        if (!this.grid.length || !this.ctx) {
-          return
-        }
-        if (next > prev) {
-          this.setGridPattern(JSON.parse(JSON.stringify(this.grid)))
-        } else {
-          this.startNewEmptyGrid()
-        }
-        this.drawGrid()
-      },
-      // immediate: true,
-    },
-    numCols: {
-      handler(stringNext: string, stringPrev: string) {
-        if (this.skipSizeCheck) {
-          this.skipSizeCheck--
-          return
-        }
-        const next = parseInt(stringNext)
-        const prev = parseInt(stringPrev)
-        if (!this.grid.length || !this.ctx) {
-          return
-        }
-        if (next > prev) {
-          this.setGridPattern(JSON.parse(JSON.stringify(this.grid)))
-        } else {
-          this.startNewEmptyGrid()
-        }
-        this.drawGrid()
-      },
-      // immediate: true,
-    },
     canvasWidth: {
       handler() {
         const ratio = 1280 / 720
         this.canvasHeight = this.canvasWidth / ratio
+        this.setGridPattern(JSON.parse(JSON.stringify(this.grid)))
       },
     },
-    canvasHeigth: {
+    cellSize: {
       handler() {
-        // this.handleHover(null)
+        this.setGridPattern(JSON.parse(JSON.stringify(this.grid)))
       },
     },
     hoveredCell: {
@@ -187,7 +148,6 @@ export default Vue.extend({
     },
     resetToggle: {
       handler() {
-        // this.grid = this.selectedPattern
         this.resetGeneration()
         this.setGridPattern(this.selectedPattern)
       },
@@ -380,7 +340,6 @@ export default Vue.extend({
         )
         this.ctx!.fillStyle = 'black'
       }
-      // console.log('ok')
     },
     async getNextGeneration() {
       if (!this.ctx) {
@@ -415,7 +374,6 @@ export default Vue.extend({
       this.incrementGeneration()
 
       window.requestAnimationFrame(this.getNextGeneration)
-      // this.getNextGeneration()
     },
     clearCanvas() {
       if (!this.ctx) {
@@ -457,30 +415,9 @@ export default Vue.extend({
     setGridPattern(pattern: number[][]) {
       this.resetGeneration()
       if (!this.ctx) {
-        return []
+        return
       }
-
-      let grid: number[][] = []
-
-      if (pattern.length < this.numRows && pattern[0].length < this.numCols) {
-        grid = generateEmptyGrid(this.numRows, this.numCols)
-      } else {
-        const extraSpace = 0
-        grid = generateEmptyGrid(
-          pattern.length + extraSpace,
-          pattern[0].length + extraSpace
-        )
-        this.skipSizeCheck = 2
-      }
-      const offsetX = Math.floor((grid[0].length - pattern[0].length) / 2)
-      const offsetY = Math.floor((grid.length - pattern.length) / 2)
-
-      for (let i = 0; i < pattern.length; i++) {
-        for (let j = 0; j < pattern[0].length; j++) {
-          grid[i + offsetY][j + offsetX] = pattern[i][j]
-        }
-      }
-      this.grid = grid
+      this.grid = mergeTwoGrids(pattern, this.numCols, this.numRows)
       this.drawGrid()
     },
     incrementGeneration() {

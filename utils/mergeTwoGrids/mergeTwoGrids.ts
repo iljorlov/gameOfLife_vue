@@ -5,6 +5,9 @@ export const mergeTwoGrids = (
   recipientGridCols: number,
   recipientGridRows: number
 ): number[][] => {
+  if (recipientGridCols <= 0 || recipientGridRows <= 0) {
+    return gridToInsert
+  }
   let providedGridCols = gridToInsert[0].length
   let providedGridRows = gridToInsert.length
 
