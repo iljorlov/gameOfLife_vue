@@ -1,3 +1,5 @@
+import generateEmptyGrid from '../generateEmptyGrid'
+
 export const mergeTwoGrids = (
   gridToInsert: number[][],
   recipientGridCols: number,
@@ -14,9 +16,6 @@ export const mergeTwoGrids = (
     return gridToInsert
   }
 
-  // const maxCols = Math.max(providedGridCols, recipientGridCols)
-  // const maxRows = Math.max(providedGridRows, recipientGridRows)
-
   let sliceStartX = Math.floor((providedGridCols - recipientGridCols) / 2)
   let sliceStartY = Math.floor((providedGridRows - recipientGridRows) / 2)
   let sliceEndX = sliceStartX + recipientGridCols
@@ -30,48 +29,17 @@ export const mergeTwoGrids = (
       .slice(sliceStartY, sliceEndY)
       .map((i) => i.slice(sliceStartX, sliceEndX))
   }
-  let colsToAdd = recipientGridCols - providedGridCols
-  let colToAddBEFORE = Math.floor(colsToAdd / 2)
-  let colToAddAfter = colsToAdd - colToAddBEFORE
 
-  let rowsToAdd = recipientGridRows - providedGridRows
-  let rowsToAddBEFORE = Math.floor(rowsToAdd / 2)
-  let rowsToAddAfter = rowsToAdd - rowsToAddBEFORE
+  let grid: number[][] = generateEmptyGrid(recipientGridRows, recipientGridCols)
 
-  let bufGrid: number[][] = []
-  while (rowsToAddBEFORE) {
-    let newRow = Array.from(Array(recipientGridCols)).map((i) => 0)
-    bufGrid.push(newRow)
-    rowsToAddBEFORE--
-    continue
-  }
+  const offsetX = Math.floor((grid[0].length - gridToInsert[0].length) / 2)
+  const offsetY = Math.floor((grid.length - gridToInsert.length) / 2)
 
-  for (let curRow = 0; curRow < providedGridRows; curRow++) {
-    let newRow: number[] = []
-    let currentColsBefore = colToAddBEFORE
-    let currentColsAfter = colToAddAfter
-    while (currentColsBefore) {
-      newRow.push(0)
-      currentColsBefore--
+  for (let i = 0; i < gridToInsert.length; i++) {
+    for (let j = 0; j < gridToInsert[0].length; j++) {
+      grid[i + offsetY][j + offsetX] = gridToInsert[i][j]
     }
-    newRow = [...newRow, ...gridToInsert[curRow]]
-
-    while (currentColsAfter) {
-      newRow.push(0)
-      currentColsAfter--
-    }
-    bufGrid.push(newRow)
   }
 
-  while (rowsToAddAfter) {
-    let newRow = Array.from(Array(recipientGridCols)).map((i) => 0)
-    bufGrid.push(newRow)
-    rowsToAddAfter--
-    continue
-  }
-  console.log('-=====================')
-  console.log(bufGrid)
-  console.log('-=====================')
-
-  return bufGrid
+  return grid
 }
