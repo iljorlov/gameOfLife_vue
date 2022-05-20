@@ -1,44 +1,20 @@
-// todo: fix error onhover when lowering cellSize // todo: canvas is not being
-redrawn after resize
+// todo: canvas is not being redrawn after resize
 <template>
-  <div>
+  <div class="px-2">
     <div>
       <div class="w-[400px] h-auto bg-pink-100 mx-auto mb-6">
-        <button
-          class="px-5 py-2 bg-blue-500 text-white rounded-sm"
-          @click="startNewEmptyGrid"
-        >
-          new
-        </button>
         <button
           class="px-5 py-2 bg-blue-500 text-white rounded-sm"
           @click="generateRandomGrid"
         >
           random
         </button>
-        <button
-          class="px-5 py-2 bg-blue-500 text-white rounded-sm"
-          @click="toggleMode()"
-        >
-          {{ isRunning ? 'Stop' : 'Start' }}
-        </button>
-        <button
-          class="px-5 py-2 bg-blue-500 text-white rounded-sm"
-          @click="
-            () => {
-              setGridPattern(selectedPattern)
-              drawGrid()
-            }
-          "
-        >
-          ship
-        </button>
       </div>
     </div>
 
     <div
       id="canvas-wrapper"
-      :class="` border  rounded ${
+      :class="` border  rounded-sm ${
         borderEnabled
           ? 'border-2 border-slate-500'
           : 'border-2 border-transparent'
@@ -46,7 +22,6 @@ redrawn after resize
     >
       <canvas
         :id="`canvas-main`"
-        class="h-full w-full"
         :height="canvasHeight"
         :width="canvasWidth"
         @mousemove="handleHover"
@@ -80,12 +55,13 @@ export default Vue.extend({
       },
     }
   },
+
   computed: {
     cellSize(): number {
       return this.$store.state.canvasState.cellSize
     },
     selectedPattern(): number[][] {
-      return this.$store.state.selectedPattern.pattern
+      return this.$store.state.canvasState.selectedPattern.pattern
     },
     showGrid(): number[][] {
       return this.$store.state.canvasState.showGrid
@@ -97,7 +73,7 @@ export default Vue.extend({
       return this.$store.state.canvasState.speed
     },
     selectedPatternName(): number[][] {
-      return this.$store.state.selectedPattern.details.name
+      return this.$store.state.canvasState.selectedPattern.details.name
     },
     isRunning(): boolean {
       return this.$store.state.canvasState.isRunning
@@ -110,6 +86,15 @@ export default Vue.extend({
     },
     numCols(): number {
       return Math.floor(this.canvasWidth / this.cellSize)
+    },
+    clearToggle(): boolean {
+      return this.$store.state.canvasState.clearToggle
+    },
+    resetToggle(): boolean {
+      return this.$store.state.canvasState.resetToggle
+    },
+    randomToggle(): boolean {
+      return this.$store.state.canvasState.randomToggle
     },
   },
   watch: {
@@ -163,6 +148,7 @@ export default Vue.extend({
       handler() {
         this.drawGrid()
       },
+      immediate: true,
     },
     hoveredCell: {
       handler(): void {
@@ -173,6 +159,33 @@ export default Vue.extend({
     selectedPatternName: {
       handler() {
         this.setGridPattern(this.selectedPattern)
+      },
+    },
+    isRunning: {
+      handler() {
+        if (this.isRunning) {
+          this.getNextGeneration()
+        }
+      },
+    },
+    resetToggle: {
+      handler() {
+        // this.grid = this.selectedPattern
+        this.resetGeneration()
+        this.setGridPattern(this.selectedPattern)
+      },
+    },
+    clearToggle: {
+      handler() {
+        this.setGridPattern([[0]])
+        this.resetGeneration()
+        this.$store.commit('canvasState/pauseCanvas')
+      },
+    },
+    randomToggle: {
+      handler() {
+        this.generateRandomGrid()
+        this.resetGeneration()
       },
     },
   },
@@ -206,9 +219,9 @@ export default Vue.extend({
   methods: {
     toggleMode() {
       if (this.isRunning) {
-        this.$store.commit('pauseCanvas')
+        this.$store.commit('canvasState/pauseCanvas')
       } else {
-        this.$store.commit('startCanvas')
+        this.$store.commit('canvasState/startCanvas')
       }
       if (this.isRunning) {
         this.getNextGeneration()
@@ -228,7 +241,14 @@ export default Vue.extend({
     },
     handleMouseDown() {
       // handles mouse click
-      if (this.hoveredCell.x >= 0 && this.hoveredCell.y >= 0) {
+      const gridRows = this.grid.length
+      const gridCols = this.grid[0].length
+      if (
+        this.hoveredCell.x >= 0 &&
+        this.hoveredCell.y >= 0 &&
+        this.hoveredCell.y < gridRows &&
+        this.hoveredCell.x < gridCols
+      ) {
         this.grid[this.hoveredCell.y][this.hoveredCell.x] =
           this.grid[this.hoveredCell.y][this.hoveredCell.x] === 0 ? 1 : 0
         this.hoveredCell.changed = true
@@ -238,16 +258,14 @@ export default Vue.extend({
     handleHover(e: MouseEvent) {
       // handles mouse hover and down
       try {
+        // const canvasWrapper = document.getElementById('canvas-wrapper')
         const rect = this.ctx!.canvas.getBoundingClientRect()
-
-        // const x = e.clientX - offX
-        // const y = e.clientY - offY
         const x = e.clientX - rect.x
         const y = e.clientY - rect.y
-        console.log(y)
-
         const xPos = Math.floor(x / this.cellSize)
         const yPos = Math.floor(y / this.cellSize)
+        const gridRows = this.grid.length
+        const gridCols = this.grid[0].length
 
         if (
           this.hoveredCell.x === xPos &&
@@ -256,6 +274,7 @@ export default Vue.extend({
         ) {
           return
         }
+
         this.hoveredCell.changed = false
         this.hoveredCell.x = xPos
         this.hoveredCell.y = yPos
@@ -264,6 +283,8 @@ export default Vue.extend({
           if (
             this.hoveredCell.x >= 0 &&
             this.hoveredCell.y >= 0 &&
+            yPos < gridRows &&
+            xPos < gridCols &&
             !this.hoveredCell.changed
           ) {
             this.grid[this.hoveredCell.y][this.hoveredCell.x] =
@@ -280,7 +301,7 @@ export default Vue.extend({
           type: 'ERROR',
           uuid: '',
         }
-        this.$store.commit('addNotification', notification)
+        this.$store.commit('notifications/addNotification', notification)
       }
     },
     drawGrid() {
@@ -291,7 +312,6 @@ export default Vue.extend({
       this.ctx!.fillStyle = 'black'
       const size = this.cellSize
       const grid = this.grid
-
       if (this.showGrid) {
         for (let i = 0; i <= this.numCols; i++) {
           this.ctx?.beginPath()
@@ -372,10 +392,14 @@ export default Vue.extend({
         }
       }
       this.grid = gridCopy
-      await sleep(100 - this.speed)
+      if (this.speed !== 100) {
+        await sleep(100 - this.speed)
+      }
       this.drawGrid()
       this.incrementGeneration()
-      this.getNextGeneration()
+
+      window.requestAnimationFrame(this.getNextGeneration)
+      // this.getNextGeneration()
     },
     clearCanvas() {
       if (!this.ctx) {
@@ -411,7 +435,7 @@ export default Vue.extend({
 
       this.resetGeneration()
       this.grid = grid
-      this.$store.commit('pauseCanvas')
+      this.$store.commit('canvasState/pauseCanvas')
       this.drawGrid()
     },
     setGridPattern(pattern: number[][]) {
@@ -447,10 +471,10 @@ export default Vue.extend({
       this.drawGrid()
     },
     incrementGeneration() {
-      this.$store.commit('incrementCurrentGeneration')
+      this.$store.commit('canvasState/incrementCurrentGeneration')
     },
     resetGeneration() {
-      this.$store.commit('resetCurrentGeneration')
+      this.$store.commit('canvasState/resetCurrentGeneration')
     },
   },
 })

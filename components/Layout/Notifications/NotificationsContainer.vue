@@ -10,7 +10,7 @@
       >
         <TransitionGroup name="list" tag="div">
           <SingleNotification
-            v-for="notification in notifications"
+            v-for="notification in notifications.notificationsList"
             :key="notification.uuid"
             :notification="notification"
           />
@@ -33,7 +33,6 @@ export default Vue.extend({
       notifications: 'notifications',
     }),
   },
-  watch: {},
 })
 </script>
 

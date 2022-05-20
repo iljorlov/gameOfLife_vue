@@ -1,8 +1,5 @@
 <template>
-  <div
-    :id="id"
-    class="flex flex-col w-40 m-auto items-center h-fit justify-center"
-  >
+  <div :id="id" class="flex flex-col w-32 items-center h-fit justify-center">
     <div class="w-full text-left mb-2">
       <label
         class="form-check-label inline-block text-white cursor-pointer"
@@ -63,18 +60,10 @@
 </template>
 
 <script lang="ts">
-// import Vue from 'vue'
+import Vue from 'vue'
+import { v4 as uuidv4 } from 'uuid'
 
-declare module 'vue/types/vue' {
-  interface Vue {
-    _uid: any
-    id: string | null
-    value: number
-    isDragging: boolean
-    percentage: number
-  }
-}
-export default {
+export default Vue.extend({
   props: {
     min: {
       type: Number,
@@ -119,13 +108,15 @@ export default {
     percentage() {
       const newVal = Math.floor(((this.max - this.min) / 100) * this.percentage)
       this.value = newVal
+
       this.$emit('newValue', newVal + this.min)
     },
   },
   mounted() {
-    this.id = this._uid
+    this.id = uuidv4()
     this.value = this.initialValue
-    this.percentage = ((this.min + this.max) / 100) * this.initialValue
+    this.percentage = (this.initialValue * 100) / this.max
+
     document.addEventListener('mouseup', this.handleMouseUp)
   },
   destroyed() {
@@ -154,7 +145,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped></style>

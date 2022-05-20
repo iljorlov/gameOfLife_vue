@@ -1,6 +1,5 @@
 <template>
   <div class="w-full">
-    <div><button @click="addNotification">add notif</button></div>
     <MainCanvas /> <TemplatesGrid /> <ControlsContainer />
   </div>
 </template>
@@ -10,7 +9,7 @@ import Vue from 'vue'
 import MainCanvas from '../components/GOL/MainCanvas.vue'
 import TemplatesGrid from '../components/GOL/TemplatesGrid.vue'
 import ControlsContainer from '../components/GOL/GameControls/ControlsWrapper.vue'
-import { NotificationType } from '~/store/index'
+import { NotificationType } from '~/store/notifications'
 
 export default Vue.extend({
   name: 'IndexPage',
@@ -28,7 +27,7 @@ export default Vue.extend({
         type: Math.random() > 0.6 ? 'INFO' : 'ERROR',
         uuid: '',
       }
-      this.$store.commit('addNotification', notification)
+      this.$store.commit('notifications/addNotification', notification)
     },
   },
 })

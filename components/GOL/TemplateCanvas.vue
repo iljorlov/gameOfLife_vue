@@ -3,14 +3,15 @@
     <div class="w-full h-full shrink-0 flex items-center justify-center">
       <canvas
         :id="`canvas${canvasIdentifier}`"
-        height="200"
-        width="200"
+        :height="height"
+        :width="width"
         @mousemove="handleHover"
         @mouseleave="handleMouseLeave"
         @click="handleSelectTemplate"
       />
     </div>
     <div
+      v-if="!onlyCanvas"
       class="w-full h-auto min-h-[48px] flex items-center justify-center bg-orange-100"
     >
       <div>{{ canvasIdentifier }}</div>
@@ -20,11 +21,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { PatternType } from '~/patterns/patterns'
 import { mapState } from 'vuex'
 import generateEmptyGrid from '../../utils/generateEmptyGrid'
 import countNeighborsSeamless from '../../utils/countNeighborsSeamless'
 import sleep from '../../utils/sleep'
+
+import { PatternType } from '~/patterns/patterns'
 
 const findMaxSide = (grid: number[][]) => {
   return grid[0].length > grid.length ? grid[0].length : grid.length
@@ -46,12 +48,24 @@ export default Vue.extend({
       type: Object as () => PatternType,
       required: true,
     },
+    height: {
+      type: Number,
+      default: 200,
+    },
+    width: {
+      type: Number,
+      default: 200,
+    },
+    onlyCanvas: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       ctx: null as CanvasRenderingContext2D | null,
       cellSize: findCellSizePx(
-        200,
+        this.width,
         findMaxSide(this.pattern.pattern) + padding
       ),
       numRows: findMaxSide(this.pattern.pattern),
@@ -66,6 +80,13 @@ export default Vue.extend({
       selectedTemplate: 'selectedTemplate',
     }),
   },
+  watch: {
+    canvasIdentifier: {
+      handler() {
+        this.setGridPattern(this.pattern.pattern)
+      },
+    },
+  },
   mounted() {
     const canvas = document!.getElementById(
       `canvas${this.canvasIdentifier}`
@@ -73,13 +94,12 @@ export default Vue.extend({
     const ctx = canvas.getContext('2d')!
     ctx.translate(0.5, 0.5)
     this.ctx = ctx
-
     this.initGrid()
   },
 
   methods: {
     handleSelectTemplate() {
-      this.$store.commit('setTemplate', this.pattern)
+      this.$store.commit('canvasState/setTemplate', this.pattern)
     },
     handleHover() {
       if (!this.isRunning) {
@@ -162,7 +182,8 @@ export default Vue.extend({
       this.grid = gridCopy
       await sleep(24)
       this.drawGrid()
-      this.getNextGeneration()
+      window.requestAnimationFrame(this.getNextGeneration)
+      // this.getNextGeneration()
     },
     clearCanvas() {
       if (!this.ctx) {
@@ -205,9 +226,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss" scoped></style>
-
-// :height="cellSize * numRows" // :width="cellSize * numCols" //
-@mousemove="handleHover" // @mouseleave="handleMouseLeave" //
-@mousedown="handleMouseDown"

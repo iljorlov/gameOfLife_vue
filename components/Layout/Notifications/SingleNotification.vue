@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { NotificationType } from '~/store'
+import { NotificationType } from '~/store/notifications'
 import XIcon from '~/components/UI/Icons/XIcon.vue'
 export default Vue.extend({
   components: {
@@ -46,7 +46,7 @@ export default Vue.extend({
   },
   methods: {
     removeNotification(uuid: string) {
-      this.$store.commit('removeNotification', uuid)
+      this.$store.commit('notifications/removeNotification', uuid)
     },
   },
 })

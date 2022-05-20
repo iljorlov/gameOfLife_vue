@@ -1,12 +1,12 @@
 <template>
   <div class="absolute inset-0 overflow-clip pointer-events-none">
     <div
-      class="h-[calc(100vh)] px-2 xl:px-0 w-full sticky top-0 flex items-end"
+      class="h-[calc(100vh)] w-full px-2 2xl:px-0 sticky top-0 flex items-end"
     >
-      <div class="md:scale-[0.8] 2xl:scale-[0.9] transition-transform w-full">
+      <div class="transition-transform w-full lg:scale-[0.8] 2xl:scale-[0.9]">
         <div
           id="controls-container"
-          class="h-32 transition-transform w-full md:px-8 bg-gray-800 rounded-lg mb-4 shadow-lg pointer-events-auto"
+          class="h-32 transition-transform w-full lg:px-8 bg-gray-800 rounded-lg mb-2 xl:mb-4 shadow-lg pointer-events-auto"
         >
           <GameControls />
         </div>
@@ -37,11 +37,8 @@ export default Vue.extend({
       const headerOffsetY = Math.abs(header.getBoundingClientRect().y)
       if (headerOffsetY < 58) {
         controlsContainer!.classList.add('translate58')
-        // controlsContainer!.style.transform = 'translateY(-58px)'
       } else {
         controlsContainer!.classList.remove('translate58')
-        // console.log(controlsContainer?.style.transform)
-        // controlsContainer!.style.transform = 'translateY(0)'
       }
     },
   },
