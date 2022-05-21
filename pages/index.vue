@@ -1,12 +1,13 @@
 <template>
   <div class="w-full">
-    <MainCanvas /> <TemplatesGrid /> <ControlsContainer />
+    <MainCanvasWrapper /> <TemplatesGrid /> <ControlsContainer />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import MainCanvas from '../components/GOL/MainCanvas.vue'
+import MainCanvasWrapper from '../components/GOL/MainCanvasWrapper.vue'
 import TemplatesGrid from '../components/GOL/TemplatesGrid.vue'
 import ControlsContainer from '../components/GOL/GameControls/ControlsWrapper.vue'
 import { NotificationType } from '~/store/notifications'
@@ -17,6 +18,12 @@ export default Vue.extend({
     MainCanvas,
     TemplatesGrid,
     ControlsContainer,
+    MainCanvasWrapper,
+  },
+  head() {
+    return {
+      title: 'Game Of Life',
+    }
   },
   methods: {
     addNotification() {
