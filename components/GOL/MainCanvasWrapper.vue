@@ -17,6 +17,7 @@
       :isRunning="isRunning"
       :borderEnabled="borderEnabled"
       :gridEnabled="showGrid"
+      :isMainCanvas="true"
     />
   </div>
 </template>

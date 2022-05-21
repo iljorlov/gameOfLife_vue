@@ -7,31 +7,43 @@
       :key="pattern.details.name"
       class="overflow-hidden border-2"
     >
-      <div @click="handleTemplateSelect" class="h-fit w-fit mx-auto">
-        <TemplateCanvas
-          :canvas-identifier="pattern.details.name"
-          :pattern="pattern"
+      <div class="h-[200px] w-[200px] mx-auto">
+        <GridCanvasWrapper
+          :canvasIdentifier="pattern.details.name"
+          :template="pattern.pattern"
         />
       </div>
     </div>
   </div>
 </template>
+<!-- :borderEnabled="borderEnabled"
+          :gridEnabled="showGrid" -->
+<!-- :resetToggle="resetToggle"
+          :clearToggle="clearToggle"
+          :randomToggle="randomToggle" -->
 
 <script>
 import { patternList } from '../../patterns/patterns'
-import TemplateCanvas from './TemplateCanvas.vue'
+import GridCanvasWrapper from './GridCanvasWrapper.vue'
 export default {
   components: {
-    TemplateCanvas,
+    GridCanvasWrapper,
   },
 
   data() {
     return {
       patternList,
+      isRunning: false,
+      resetToggle: false,
     }
   },
+  computed: {
+    cellSize() {
+      return 2
+    },
+  },
+
   methods: {
-    provideCanvasContext() {},
     handleTemplateSelect() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
       this.$store.commit('canvasState/startCanvas')

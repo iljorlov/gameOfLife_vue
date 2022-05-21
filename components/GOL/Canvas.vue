@@ -25,6 +25,10 @@ export default Vue.extend({
       type: String,
       required: true,
     },
+    isMainCanvas: {
+      type: Boolean,
+      default: false,
+    },
     canvasHeight: {
       type: Number,
       required: true,
@@ -43,15 +47,15 @@ export default Vue.extend({
     },
     clearToggle: {
       type: Boolean,
-      required: true,
+      default: false,
     },
     resetToggle: {
       type: Boolean,
-      required: true,
+      default: false,
     },
     randomToggle: {
       type: Boolean,
-      required: false,
+      default: false,
     },
     borderEnabled: {
       type: Boolean,
@@ -108,14 +112,18 @@ export default Vue.extend({
     },
     resetToggle: {
       handler() {
-        this.resetGeneration()
+        if (this.isMainCanvas) {
+          this.resetGeneration()
+        }
         this.setGridPattern(this.selectedPattern)
       },
     },
     clearToggle: {
       handler() {
         this.setGridPattern([[0]])
-        this.resetGeneration()
+        if (this.isMainCanvas) {
+          this.resetGeneration()
+        }
         this.$store.commit('canvasState/pauseCanvas')
       },
     },
@@ -131,7 +139,7 @@ export default Vue.extend({
       `canvas-${this.canvasIdentifier}`
     )! as HTMLCanvasElement
     const ctx = canvas.getContext('2d')!
-    ctx.translate(0.5 * this.cellSize, 0.5 * this.cellSize)
+    // ctx.translate(0.5 * this.cellSize, 0.5 * this.cellSize)
     this.ctx = ctx
     this.initGrid(this.template)
   },
@@ -173,71 +181,79 @@ export default Vue.extend({
       this.drawGame()
     },
     handleMouseLeave() {
-      this.hoveredCell.x = -1
-      this.hoveredCell.y = -1
+      if (this.isMainCanvas) {
+        this.hoveredCell.x = -1
+        this.hoveredCell.y = -1
+      } else {
+        this.setGridPattern(this.template)
+      }
     },
     handleMouseDown() {
-      // handles mouse click
-      const gridRows = this.grid.length
-      const gridCols = this.grid[0].length
-      if (
-        this.hoveredCell.x >= 0 &&
-        this.hoveredCell.y >= 0 &&
-        this.hoveredCell.y < gridRows &&
-        this.hoveredCell.x < gridCols
-      ) {
-        this.grid[this.hoveredCell.y][this.hoveredCell.x] =
-          this.grid[this.hoveredCell.y][this.hoveredCell.x] === 0 ? 1 : 0
-        this.hoveredCell.changed = true
-        this.drawGame()
+      if (this.isMainCanvas) {
+        // handles mouse click
+        const gridRows = this.grid.length
+        const gridCols = this.grid[0].length
+        if (
+          this.hoveredCell.x >= 0 &&
+          this.hoveredCell.y >= 0 &&
+          this.hoveredCell.y < gridRows &&
+          this.hoveredCell.x < gridCols
+        ) {
+          this.grid[this.hoveredCell.y][this.hoveredCell.x] =
+            this.grid[this.hoveredCell.y][this.hoveredCell.x] === 0 ? 1 : 0
+          this.hoveredCell.changed = true
+          this.drawGame()
+        }
       }
     },
     handleHover(e: MouseEvent) {
-      // handles mouse hover and down
-      try {
-        const rect = this.ctx!.canvas.getBoundingClientRect()
-        const x = e.clientX - rect.x
-        const y = e.clientY - rect.y
-        const xPos = Math.floor(x / this.cellSize)
-        const yPos = Math.floor(y / this.cellSize)
-        const gridRows = this.grid.length
-        const gridCols = this.grid[0].length
+      if (this.isMainCanvas) {
+        // handles mouse hover and down
+        try {
+          const rect = this.ctx!.canvas.getBoundingClientRect()
+          const x = e.clientX - rect.x
+          const y = e.clientY - rect.y
+          const xPos = Math.floor(x / this.cellSize)
+          const yPos = Math.floor(y / this.cellSize)
+          const gridRows = this.grid.length
+          const gridCols = this.grid[0].length
 
-        if (
-          this.hoveredCell.x === xPos &&
-          this.hoveredCell.y === yPos &&
-          this.hoveredCell.changed
-        ) {
-          return
-        }
-
-        this.hoveredCell.changed = false
-        this.hoveredCell.x = xPos
-        this.hoveredCell.y = yPos
-
-        if (e.buttons === 1) {
           if (
-            this.hoveredCell.x >= 0 &&
-            this.hoveredCell.y >= 0 &&
-            yPos < gridRows &&
-            xPos < gridCols &&
-            !this.hoveredCell.changed
+            this.hoveredCell.x === xPos &&
+            this.hoveredCell.y === yPos &&
+            this.hoveredCell.changed
           ) {
-            this.grid[this.hoveredCell.y][this.hoveredCell.x] =
-              this.grid[this.hoveredCell.y][this.hoveredCell.x] === 0 ? 1 : 0
-            this.hoveredCell.changed = true
-            this.drawGame()
+            return
           }
+
+          this.hoveredCell.changed = false
+          this.hoveredCell.x = xPos
+          this.hoveredCell.y = yPos
+
+          if (e.buttons === 1) {
+            if (
+              this.hoveredCell.x >= 0 &&
+              this.hoveredCell.y >= 0 &&
+              yPos < gridRows &&
+              xPos < gridCols &&
+              !this.hoveredCell.changed
+            ) {
+              this.grid[this.hoveredCell.y][this.hoveredCell.x] =
+                this.grid[this.hoveredCell.y][this.hoveredCell.x] === 0 ? 1 : 0
+              this.hoveredCell.changed = true
+              this.drawGame()
+            }
+          }
+        } catch (error) {
+          const notification = {
+            lifeDurationSeconds: 6,
+            text: 'Error',
+            title: 'Hover fail',
+            type: 'ERROR',
+            uuid: '',
+          }
+          this.$store.commit('notifications/addNotification', notification)
         }
-      } catch (error) {
-        const notification = {
-          lifeDurationSeconds: 6,
-          text: 'Error',
-          title: 'Hover fail',
-          type: 'ERROR',
-          uuid: '',
-        }
-        this.$store.commit('notifications/addNotification', notification)
       }
     },
     drawGrid() {
@@ -246,11 +262,7 @@ export default Vue.extend({
         this.ctx!.lineWidth = 0.5
         this.ctx!.strokeStyle = '#bdbdbd'
         this.ctx?.moveTo(this.cellSize * i, 0)
-        this.ctx?.lineTo(
-          this.cellSize * i,
-          this.cellSize * this.numRows
-          // this.ctx.canvas.height - 0.5 * this.cellSize
-        )
+        this.ctx?.lineTo(this.cellSize * i, this.cellSize * this.numRows)
         this.ctx?.stroke()
       }
       for (let i = 0; i <= this.numRows; i++) {
@@ -258,11 +270,7 @@ export default Vue.extend({
         this.ctx!.lineWidth = 0.5
         this.ctx!.strokeStyle = '#bdbdbd'
         this.ctx?.moveTo(0, this.cellSize * i)
-        this.ctx?.lineTo(
-          this.cellSize * this.numCols,
-          // this.ctx.canvas.width - 0.5 * this.cellSize,
-          this.cellSize * i
-        )
+        this.ctx?.lineTo(this.cellSize * this.numCols, this.cellSize * i)
         this.ctx?.stroke()
       }
     },
@@ -343,7 +351,9 @@ export default Vue.extend({
         await sleep(100 - this.speed)
       }
       this.drawGame()
-      this.incrementGeneration()
+      if (this.isMainCanvas) {
+        this.incrementGeneration()
+      }
 
       window.requestAnimationFrame(this.getNextGeneration)
     },
@@ -364,7 +374,9 @@ export default Vue.extend({
       this.drawGame()
     },
     setGridPattern(pattern: number[][]) {
-      this.resetGeneration()
+      if (this.isMainCanvas) {
+        this.resetGeneration()
+      }
       this.grid = mergeTwoGrids(pattern, this.numCols, this.numRows)
       this.drawGame()
     },
