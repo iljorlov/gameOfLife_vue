@@ -82,6 +82,11 @@ export default Vue.extend({
     }
   },
   watch: {
+    canvasWidth: {
+      handler() {
+        this.setGridPattern(this.grid)
+      },
+    },
     gridEnabled: {
       handler() {
         this.drawGame()
