@@ -11,13 +11,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-// import CustomSlider from '../../CustomSlider.vue'
 import SpeedControls from './ControlsComponents/SpeedControls.vue'
 import CellSizeControls from './ControlsComponents/CellSizeControls.vue'
 import AdditionalData from './ControlsComponents/AdditionalData.vue'
 import MainControls from './ControlsComponents/MainControls.vue'
 
-// import { CanvasStateType } from '~/store/canvasState/canvasState'
 import { PatternType } from '~/patterns/patterns'
 
 export default Vue.extend({
@@ -27,12 +25,6 @@ export default Vue.extend({
     AdditionalData,
     MainControls,
   },
-  // data() {
-  //   return {
-  //     width: 0,
-  //   }
-  // },
-
   computed: {
     canvasState() {
       return this.$store.state.canvasState
@@ -41,18 +33,6 @@ export default Vue.extend({
       return this.$store.state.canvasState.selectedPattern
     },
   },
-  // mounted() {
-  //   this.width = window.innerWidth
-  //   window.addEventListener('resize', this.resizeHandler)
-  // },
-  // destroyed() {
-  //   window.removeEventListener('resize', this.resizeHandler)
-  // },
-  // methods: {
-  //   resizeHandler() {
-  //     this.width = window.innerWidth
-  //   },
-  // },
 })
 </script>
 

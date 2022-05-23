@@ -13,10 +13,12 @@
             alt="Flowbite Logo"
           /> -->
           <span
-            class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
+            class="self-center text-xl font-semibold whitespace-nowrap dark:text-gray-200"
             >Game of Life</span
           >
         </a>
+        <ThemeToggle class="ml-auto mr-4" />
+
         <button
           data-collapse-toggle="mobile-menu"
           type="button"
@@ -50,9 +52,13 @@
             ></path>
           </svg>
         </button>
-        <div id="mobile-menu" class="hidden w-full md:block md:w-auto">
+
+        <div
+          id="mobile-menu"
+          class="hidden w-full md:flex md:w-auto items-center"
+        >
           <ul
-            class="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium"
+            class="flex ml-8 flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium"
           >
             <li>
               <a
@@ -151,7 +157,13 @@
 </template>
 
 <script>
-export default {}
+import Vue from 'vue'
+import ThemeToggle from '~/components/Layout/ThemeToggle.vue'
+export default Vue.extend({
+  components: {
+    ThemeToggle,
+  },
+})
 </script>
 
 <style lang="scss" scoped></style>

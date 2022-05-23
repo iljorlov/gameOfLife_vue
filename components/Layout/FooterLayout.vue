@@ -8,7 +8,7 @@
           class="text-sm cursor-pointer w-fit sm:text-center dark:text-gray-400 flex items-center justify-between space-x-2"
         >
           <img class="h-6 w-6 rounded-sm" src="~/assets/GitHub-Mark.png" />
-          <span class="text-gray-200">iljorlov</span>
+          <span class="text-gray-500 dark:text-gray-400">iljorlov</span>
           <!-- © 2022 -->
           <!-- <a href="https://flowbite.com" class="hover:underline">Flowbite™</a>. -->
           <!-- All Rights Reserved. -->

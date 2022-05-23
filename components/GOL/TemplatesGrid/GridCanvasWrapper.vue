@@ -1,5 +1,5 @@
 <template>
-  <div @mousemove="handleMousemove" @mouseleave="handleMouseLeave">
+  <div @mousemove="(e) => handleMousemove(e)" @mouseleave="handleMouseLeave">
     <CanvasComponent
       :canvas-width="200"
       :canvas-height="200"
@@ -38,7 +38,10 @@ export default Vue.extend({
     }
   },
   methods: {
-    handleMousemove() {
+    handleMousemove(e: MouseEvent) {
+      if (!(e instanceof window.MouseEvent)) {
+        return
+      }
       this.isRunning = true
     },
     handleMouseLeave() {

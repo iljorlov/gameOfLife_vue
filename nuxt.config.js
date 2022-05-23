@@ -29,12 +29,19 @@ export default {
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/color-mode',
+
   ],
+  colorMode: {
+    classSuffix: '',
+  },
   tailwindcss: {
     jit: true,
     // add '~tailwind.config` alias
     exposeConfig: true
   },
+
+
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [],

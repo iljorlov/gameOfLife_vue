@@ -31,7 +31,7 @@
                 <div class="px-5 w-full"><CellSizeControls /></div>
               </div>
               <button
-                class="bg-gray-800 text-white rounded-t-lg h-8 w-8 absolute -top-[30px] right-1 flex items-center justify-center"
+                class="bg-gray-800 text-white rounded-t-lg h-8 w-12 absolute -top-[30px] right-1 flex items-center justify-center"
                 @click="toggleMobileMenu"
               >
                 <CogIcon
