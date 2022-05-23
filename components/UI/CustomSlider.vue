@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" class="flex flex-col w-32 items-center h-fit justify-center">
+  <div :id="id" class="flex flex-col w-full items-center h-fit justify-center">
     <div class="w-full text-left mb-2">
       <label
         class="form-check-label inline-block text-white cursor-pointer"
@@ -101,6 +101,13 @@ export default Vue.extend({
   },
 
   watch: {
+    // initialValue: {
+    //   handler() {
+    //     this.value = this.initialValue
+    //     this.percentage = (this.initialValue * 100) / this.max
+    //   },
+    //   immediate: true,
+    // },
     isDragging() {
       if (this.isDragging) {
         document.addEventListener('mousemove', this.handleMouseMove)
@@ -153,11 +160,14 @@ export default Vue.extend({
     handleSliderClick(e: MouseEvent) {
       if (this.id) {
         const slider = document.getElementById(this.id)
-        const xOffset = slider?.getBoundingClientRect().x
+        const sliderRect = slider?.getBoundingClientRect()
+        const xOffset = sliderRect?.x
 
         if (slider && e.button === 0 && xOffset) {
           const val = e.x - xOffset
-          this.percentage = val > 100 ? 100 : val < 0 ? 0 : val
+          const percentage = (val / sliderRect.width) * 100
+          this.percentage =
+            percentage > 100 ? 100 : percentage < 0 ? 0 : percentage
         }
       }
     },

@@ -100,6 +100,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    mobileDrawModeOn(): boolean {
+      return this.$store.state.canvasState.mobileDrawModeOn
+    },
     selectedPattern(): number[][] {
       return this.$store.state.canvasState.selectedPattern.pattern
     },
@@ -146,9 +149,17 @@ export default Vue.extend({
       },
     },
     resetToggle: {
-      handler() {
+      async handler() {
         if (this.isMainCanvas) {
           this.resetGeneration()
+          const paddingCells = 20
+          const minCellSize = Math.ceil(
+            this.canvasWidth / (this.template[0].length + paddingCells)
+          )
+          if (this.cellSize > minCellSize) {
+            this.$store.commit('canvasState/setCellSize', minCellSize)
+          }
+          await this.$nextTick()
           this.setGridPattern(this.selectedPattern)
         } else {
           this.setGridPattern(this.template)
@@ -176,9 +187,16 @@ export default Vue.extend({
       `canvas-${this.canvasIdentifier}`
     )! as HTMLCanvasElement
     const ctx = canvas.getContext('2d')!
-
     this.ctx = ctx
     this.initGrid(this.template)
+
+    canvas.addEventListener('touchmove', (e) => this.handleHover(e))
+  },
+  destroyed() {
+    const canvas = document!.getElementById(
+      `canvas-${this.canvasIdentifier}`
+    )! as HTMLCanvasElement
+    canvas.removeEventListener('touchmove', (e) => this.handleHover(e))
   },
 
   methods: {
@@ -223,13 +241,35 @@ export default Vue.extend({
         }
       }
     },
-    handleHover(e: MouseEvent) {
+    handleHover(e: MouseEvent | TouchEvent) {
       if (this.isMainCanvas && e) {
+        if (
+          window.TouchEvent &&
+          e instanceof TouchEvent &&
+          !this.mobileDrawModeOn
+        ) {
+          return
+        }
+        if (this.mobileDrawModeOn) {
+          e.preventDefault()
+        }
         // handles mouse hover and down
         try {
+          const clientX =
+            e instanceof MouseEvent
+              ? e.clientX
+              : window.TouchEvent && e instanceof TouchEvent
+              ? e.touches[0].clientX
+              : 0
+          const clientY =
+            e instanceof MouseEvent
+              ? e.clientY
+              : window.TouchEvent && e instanceof TouchEvent
+              ? e.touches[0].clientY
+              : 0
           const rect = this.ctx!.canvas.getBoundingClientRect()
-          const x = e.clientX - rect.x
-          const y = e.clientY - rect.y
+          const x = clientX - rect.x
+          const y = clientY - rect.y
           const xPos = Math.floor(x / this.cellSize)
           const yPos = Math.floor(y / this.cellSize)
           const gridRows = this.grid.length
@@ -247,7 +287,10 @@ export default Vue.extend({
           this.hoveredCell.x = xPos
           this.hoveredCell.y = yPos
 
-          if (e.buttons === 1) {
+          if (
+            (e instanceof MouseEvent && e.buttons === 1) ||
+            (window.TouchEvent && e instanceof TouchEvent)
+          ) {
             if (
               this.hoveredCell.x >= 0 &&
               this.hoveredCell.y >= 0 &&
@@ -263,16 +306,20 @@ export default Vue.extend({
           }
         } catch (error) {
           const notification: NotificationType = {
-            lifeDurationSeconds: 6,
+            lifeDurationSeconds: 2,
             text: 'Error',
             title: 'Hover fail',
             type: 'ERROR',
             uuid: '',
           }
           this.$store.commit('notifications/addNotification', notification)
+          console.log(error)
         }
       }
     },
+    // handleTouchStart(e: TouchEvent) {
+    //   console.log(e.touches[0].clientX)
+    // },
     drawGrid() {
       if (this.ctx) {
         for (let i = 0; i <= this.numCols; i++) {
@@ -372,7 +419,6 @@ export default Vue.extend({
       }
       if (this.isMainCanvas) {
         this.incrementGeneration()
-        console.log('increment')
       }
 
       if (aliveCount === 0) {

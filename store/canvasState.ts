@@ -3,6 +3,7 @@ import { patternList, PatternType } from '../patterns/patterns'
 
 export const state = () => ({
   isRunning: false,
+  mobileDrawModeOn: false,
   currentGeneration: 0,
   cellSize: 10,
   speed: 100,
@@ -40,6 +41,12 @@ export const mutations: MutationTree<CanvasStateType> = {
   },
   toggleGridOff: (state: CanvasStateType) => {
     state.showGrid = false
+  },
+  toggleMobileDrawModeOn: (state: CanvasStateType) => {
+    state.mobileDrawModeOn = true
+  },
+  toggleMobileDrawModeOff: (state: CanvasStateType) => {
+    state.mobileDrawModeOn = false
   },
   toggleBorderOn: (state: CanvasStateType) => {
     state.border = true

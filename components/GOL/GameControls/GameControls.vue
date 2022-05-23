@@ -1,7 +1,8 @@
 <template>
   <div class="w-full h-full text-white p-4 flex items-center justify-between">
     <div class="lg:flex justify-between items-start space-x-8 h-full hidden">
-      <SpeedControls /> <CellSizeControls />
+      <div class="w-32"><SpeedControls /></div>
+      <div class="w-32"><CellSizeControls /></div>
     </div>
     <MainControls />
     <AdditionalData />
@@ -26,6 +27,12 @@ export default Vue.extend({
     AdditionalData,
     MainControls,
   },
+  // data() {
+  //   return {
+  //     width: 0,
+  //   }
+  // },
+
   computed: {
     canvasState() {
       return this.$store.state.canvasState
@@ -34,7 +41,18 @@ export default Vue.extend({
       return this.$store.state.canvasState.selectedPattern
     },
   },
-  methods: {},
+  // mounted() {
+  //   this.width = window.innerWidth
+  //   window.addEventListener('resize', this.resizeHandler)
+  // },
+  // destroyed() {
+  //   window.removeEventListener('resize', this.resizeHandler)
+  // },
+  // methods: {
+  //   resizeHandler() {
+  //     this.width = window.innerWidth
+  //   },
+  // },
 })
 </script>
 

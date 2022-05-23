@@ -1,7 +1,7 @@
 <template>
   <div
     id="main-canvas-wrapper"
-    :class="`mt-6 w-full border cursor-crosshair ${
+    :class="`mt-3 md:mt-6 w-full border cursor-crosshair ${
       borderEnabled ? 'border-black' : 'border-transparent'
     }`"
   >
@@ -76,22 +76,20 @@ export default Vue.extend({
     },
   },
   mounted() {
-    window.addEventListener('resize', () => {
-      const wrapper = document.getElementById('main-canvas-wrapper')
-      if (wrapper) {
-        this.canvasWidth = wrapper.getBoundingClientRect().width
-      }
-    })
+    window.addEventListener('resize', this.handleResize)
     const wrapper = document.getElementById('main-canvas-wrapper')
     this.canvasWidth = wrapper!.getBoundingClientRect().width
   },
   destroyed() {
-    window.removeEventListener('resize', () => {
+    window.removeEventListener('resize', this.handleResize)
+  },
+  methods: {
+    handleResize() {
       const wrapper = document.getElementById('main-canvas-wrapper')
       if (wrapper) {
         this.canvasWidth = wrapper.getBoundingClientRect().width
       }
-    })
+    },
   },
 })
 </script>

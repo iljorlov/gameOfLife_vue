@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-96 px-6 bg-gray-700 rounded-lg h-full flex justify-between items-center"
+    class="w-96 px-4 lg:px-6 bg-gray-700 rounded-lg h-full flex justify-between items-center"
   >
     <div
       class="h-10 cursor-pointer shrink-0 w-10 rounded-full group hover:bg-gray-800 transition-colors bg-slate-50 flex items-center justify-center"
@@ -16,7 +16,7 @@
       />
     </div>
     <div
-      class="bg-white cursor-pointer rounded-sm overflow-hidden"
+      class="bg-white cursor-pointer hidden sm:block rounded-sm overflow-hidden"
       @mousemove="handleMousemove"
       @mouseleave="handleMouseLeave"
       @click="resetCanvas"

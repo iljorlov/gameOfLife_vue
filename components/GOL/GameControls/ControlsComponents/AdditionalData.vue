@@ -17,6 +17,12 @@
       :checked-by-default="canvasState.showGrid"
       @isChecked="(e) => handleGrid(e)"
     />
+    <CustomCheckbox
+      class="xl:hidden"
+      :title="`Draw Mode`"
+      :checked-by-default="canvasState.mobileDrawModeOn"
+      @isChecked="(e) => handleMobileDrawMode(e)"
+    />
   </div>
 </template>
 
@@ -46,6 +52,13 @@ export default Vue.extend({
         this.$store.commit('canvasState/toggleGridOn')
       } else {
         this.$store.commit('canvasState/toggleGridOff')
+      }
+    },
+    handleMobileDrawMode(e: boolean) {
+      if (e) {
+        this.$store.commit('canvasState/toggleMobileDrawModeOn')
+      } else {
+        this.$store.commit('canvasState/toggleMobileDrawModeOff')
       }
     },
   },

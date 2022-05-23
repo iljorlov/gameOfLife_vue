@@ -1,9 +1,9 @@
 <template>
   <div class="mx-auto min-h-[100vh] h-full flex flex-col justify-between">
-    <div>
+    <div class="relative">
       <NotificationsContainer />
       <HeaderLayout />
-      <div class="max-w-[1280px] h-full w-full mx-auto relative"><Nuxt /></div>
+      <div class="max-w-[1280px] h-full w-full mx-auto"><Nuxt /></div>
     </div>
     <FooterLayout />
   </div>

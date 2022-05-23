@@ -1,14 +1,50 @@
 <template>
-  <div class="absolute inset-0 overflow-clip pointer-events-none">
-    <div
-      class="h-[calc(100vh)] w-full px-2 2xl:px-0 sticky top-0 flex items-end"
-    >
-      <div class="transition-transform w-full lg:scale-[0.8] 2xl:scale-[0.9]">
+  <div
+    class="absolute max-w-[1280px] mx-auto inset-0 h-full pointer-events-none"
+  >
+    <div class="relative h-full w-full">
+      <div
+        :style="{ height: `${height}px` }"
+        class="w-full sticky top-0 flex items-end overflow-hidden"
+      >
         <div
           id="controls-container"
-          class="h-32 transition-transform w-full lg:px-8 bg-gray-800 rounded-lg mb-2 xl:mb-4 shadow-lg pointer-events-auto"
+          :class="`h-28 sm:h-32 relative  w-full lg:px-8 bg-gray-800 ${
+            showMobileMenu ? '' : 'rounded-t-lg delay-200'
+          }  xl:rounded-lg xl:mb-2 shadow-lg pointer-events-auto`"
         >
-          <GameControls />
+          <div
+            :style="{
+              transform: `translateY(-${
+                showMobileMenu ? mobileMenuHeightPx : 0
+              }px)`,
+            }"
+            class="h-96 lg:hidden lg:pointer-events-none transition-all duration-500 w-full max-w-[384px] top-0 right-0 -z-50 absolute"
+          >
+            <div class="relative w-full h-full bg-gray-800 rounded-t-lg">
+              <div
+                :class="` h-full transition-opacity w-full p-6 text-white ${
+                  showMobileMenu ? 'opacity-100' : 'opacity-0'
+                }`"
+              >
+                <div class="px-5 w-full mb-10"><SpeedControls /></div>
+                <div class="px-5 w-full"><CellSizeControls /></div>
+              </div>
+              <button
+                class="bg-gray-800 text-white rounded-t-lg h-8 w-8 absolute -top-[30px] right-1 flex items-center justify-center"
+                @click="toggleMobileMenu"
+              >
+                <CogIcon
+                  class="transition-transform"
+                  :style="{
+                    transform: `rotateZ(${showMobileMenu ? 360 : 0}deg)`,
+                  }"
+                />
+              </button>
+            </div>
+          </div>
+
+          <GameControls class="z-10" />
         </div>
       </div>
     </div>
@@ -18,35 +54,64 @@
 <script lang="ts">
 import Vue from 'vue'
 import GameControls from './GameControls.vue'
+import SpeedControls from '~/components/GOL/GameControls/ControlsComponents/SpeedControls.vue'
+import CellSizeControls from '~/components/GOL/GameControls/ControlsComponents/CellSizeControls.vue'
+import CogIcon from '~/components/UI/Icons/CogIcon.vue'
 export default Vue.extend({
   components: {
     GameControls,
+    CogIcon,
+    SpeedControls,
+    CellSizeControls,
+  },
+  data() {
+    return {
+      height: 0,
+      showMobileMenu: false,
+      mobileMenuHeightPx: 384,
+    }
   },
   mounted() {
-    window.addEventListener('scroll', this.handleScroll)
-    this.handleScroll()
+    window.addEventListener('resize', (e) => this.handleResize(e))
+    this.height = window.innerHeight
   },
   destroyed() {
-    window.removeEventListener('scroll', this.handleScroll)
+    window.removeEventListener('resize', (e) => this.handleResize(e))
   },
 
   methods: {
-    handleScroll() {
-      const header = document.getElementsByTagName('header')[0]
-      const controlsContainer = document.getElementById('controls-container')
-      const headerOffsetY = Math.abs(header.getBoundingClientRect().y)
-      if (headerOffsetY < 58) {
-        controlsContainer!.classList.add('translate58')
-      } else {
-        controlsContainer!.classList.remove('translate58')
+    handleResize(e: UIEvent) {
+      this.height = window.innerHeight
+      if (e.view?.innerWidth && e.view?.innerWidth > 768) {
+        this.showMobileMenu = false
       }
+    },
+    toggleMobileMenu() {
+      this.showMobileMenu = !this.showMobileMenu
     },
   },
 })
 </script>
 
 <style scoped>
-.translate58 {
-  transform: translateY(-58px);
+.btn-container {
+  display: inline-block;
+  position: relative;
+  height: 1em;
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
 }
 </style>
