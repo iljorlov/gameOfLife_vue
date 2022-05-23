@@ -2,23 +2,24 @@
   <div>
     <CustomToggle
       :class="`bg-gray-700 relative transition-all`"
-      :value="lightTheme"
+      :checked="darkMode"
       @isChecked="(e) => toggleTheme(e)"
       ><MoonIcon
         :style="{
-          transform: `translateX(${lightTheme ? '2' : '26'}px)`,
-          opacity: `${lightTheme ? '0' : '1'}`,
+          transform: `translateX(${darkMode ? '2' : '26'}px)`,
+          opacity: `${darkMode ? '1' : '0'}`,
         }"
         class="h-4 w-4 absolute -translate-y-1/2 left-0 transition-all text-yellow-400"
       />
       <SunIcon
         :style="{
-          transform: `translateX(${lightTheme ? '2' : '22'}px)`,
-          opacity: `${lightTheme ? '1' : '0'}`,
+          transform: `translateX(${darkMode ? '2' : '22'}px)`,
+          opacity: `${darkMode ? '0' : '1'}`,
         }"
         class="h-4 w-4 absolute -translate-y-1/2 left-0 transition-all text-yellow-400"
       />
     </CustomToggle>
+    {{ darkMode }}
   </div>
 </template>
 
@@ -33,21 +34,22 @@ export default Vue.extend({
     SunIcon,
     CustomToggle,
   },
-  data() {
-    return {
-      lightTheme: null as unknown,
-    }
+
+  computed: {
+    darkMode(): boolean {
+      return this.$store.state.darkMode
+    },
   },
   watch: {
-    lightTheme: {
+    darkMode: {
       handler() {
-        if (this.lightTheme === null) {
-          return
-        }
-        if (this.lightTheme) {
-          document.documentElement.classList.remove('dark')
-        } else {
+        // if (this.lightTheme === null) {
+        //   return
+        // }
+        if (this.darkMode) {
           document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
         }
       },
     },
@@ -60,9 +62,11 @@ export default Vue.extend({
         (typeof theme === 'string' && theme === 'dark') ||
         window.matchMedia('(prefers-color-scheme: dark)').matches
       ) {
-        this.lightTheme = false
+        this.$store.commit('setDarkModeOn')
+
+        document.documentElement.classList.add('dark')
       } else if (typeof theme === 'string' && theme === 'light') {
-        this.lightTheme = true
+        document.documentElement.classList.remove('dark')
       }
     } catch (error) {
       console.log(error)
@@ -70,11 +74,14 @@ export default Vue.extend({
   },
   methods: {
     toggleTheme(e: boolean) {
-      this.lightTheme = e
+      console.log(e)
+
       if (e) {
-        localStorage.setItem('theme', 'light')
-      } else {
+        this.$store.commit('setDarkModeOn')
         localStorage.setItem('theme', 'dark')
+      } else {
+        this.$store.commit('setDarkModeOff')
+        localStorage.setItem('theme', 'light')
       }
     },
   },

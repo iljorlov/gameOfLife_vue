@@ -18,28 +18,14 @@ import Vue from 'vue'
 
 export default Vue.extend({
   props: {
-    value: {
+    checked: {
       type: Boolean,
       required: true,
     },
   },
-  data() {
-    return {
-      checked: this.value,
-    }
-  },
-  watch: {
-    value() {
-      this.checked = this.value
-    },
-    checked() {
-      this.$emit('isChecked', this.checked)
-    },
-  },
   methods: {
     handleClick() {
-      this.checked = !this.checked
-      this.$emit('isChecked', this.checked)
+      this.$emit('isChecked', !this.checked)
     },
   },
 })
