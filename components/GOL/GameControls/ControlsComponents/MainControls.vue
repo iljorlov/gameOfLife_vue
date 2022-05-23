@@ -16,7 +16,8 @@
       />
     </div>
     <div
-      class="bg-white cursor-pointer hidden sm:block rounded-sm overflow-hidden"
+      id="canvas-preview-wrapper"
+      class="bg-white dark:bg-gray-800 cursor-pointer h-[84px] w-[84px] hidden sm:block rounded-sm"
       @mousemove="handleMousemove"
       @mouseleave="handleMouseLeave"
       @click="resetCanvas"
@@ -73,8 +74,8 @@ export default Vue.extend({
       const height =
         this.$store.state.canvasState.selectedPattern.pattern.length
       const largestDimension = width > height ? width : height
-      const padding = 16
-      return (this.canvasSize - padding) / largestDimension
+      const padding = 10
+      return (this.canvasSize - padding) / (largestDimension + padding)
     },
   },
   watch: {
@@ -83,6 +84,12 @@ export default Vue.extend({
         this.resetToggle = !this.resetToggle
       },
     },
+  },
+  mounted() {
+    const wrapper = document.getElementById('canvas-preview-wrapper')
+    if (wrapper?.getBoundingClientRect().width) {
+      this.canvasSize = wrapper?.getBoundingClientRect().width
+    }
   },
   methods: {
     togglePlayMode(e: number) {

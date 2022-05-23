@@ -5,11 +5,11 @@
     <div class="relative h-full w-full">
       <div
         :style="{ height: `${height}px` }"
-        class="w-full sticky top-0 flex items-end overflow-hidden"
+        class="w-full sticky top-0 flex items-end overflow-y-hidden"
       >
         <div
           id="controls-container"
-          :class="`h-28 sm:h-32 relative  w-full lg:px-8 bg-gray-800 ${
+          :class="`h-28 sm:h-32 relative border-2 border-transparent dark:border-gray-600 transition-colors  w-full lg:px-8 bg-gray-800 ${
             showMobileMenu ? '' : 'rounded-t-lg delay-200'
           }  xl:rounded-lg xl:mb-2 shadow-lg pointer-events-auto`"
         >
@@ -21,7 +21,9 @@
             }"
             class="h-96 lg:hidden lg:pointer-events-none transition-all duration-500 w-full max-w-[384px] top-0 right-0 -z-50 absolute"
           >
-            <div class="relative w-full h-full bg-gray-800 rounded-t-lg">
+            <div
+              class="relative w-full h-full bg-gray-800 ring-2 ring-transparent dark:ring-gray-600 rounded-t-lg"
+            >
               <div
                 :class="` h-full transition-opacity w-full p-6 text-white ${
                   showMobileMenu ? 'opacity-100' : 'opacity-0'
@@ -31,7 +33,7 @@
                 <div class="px-5 w-full"><CellSizeControls /></div>
               </div>
               <button
-                class="bg-gray-800 text-white rounded-t-lg h-8 w-12 absolute -top-[30px] right-1 flex items-center justify-center"
+                class="bg-gray-800 ring-2 ring-transparent dark:ring-gray-600 text-white rounded-t-lg h-8 w-12 absolute -top-[34px] right-1 flex items-center justify-center"
                 @click="toggleMobileMenu"
               >
                 <CogIcon

@@ -6,6 +6,8 @@ export type PatternType = {
     name: string
     year: string
     period: number
+    description: string
+    author: string
   }
 }
 
@@ -234,6 +236,8 @@ export const patternList: PatternType[] = [
       name: 'achimsp11',
       period: 0,
       year: '',
+      description: '',
+      author: '',
     },
   },
   {
@@ -242,6 +246,8 @@ export const patternList: PatternType[] = [
       name: 'barge2spaceship',
       period: 0,
       year: '',
+      description: '',
+      author: '',
     },
   },
   {
@@ -250,6 +256,8 @@ export const patternList: PatternType[] = [
       name: 'alternatepentadecathlononsnacker',
       period: 0,
       year: '',
+      description: '',
+      author: '',
     },
   },
   {
@@ -258,6 +266,8 @@ export const patternList: PatternType[] = [
       name: 'achimsp144',
       period: 0,
       year: '',
+      description: '',
+      author: '',
     },
   },
 
@@ -267,6 +277,8 @@ export const patternList: PatternType[] = [
       name: 'twoTriangles',
       period: 0,
       year: '',
+      description: '',
+      author: '',
     },
   },
   {
@@ -275,6 +287,8 @@ export const patternList: PatternType[] = [
       name: 'average',
       period: 0,
       year: '',
+      description: '',
+      author: '',
     },
   },
 ]

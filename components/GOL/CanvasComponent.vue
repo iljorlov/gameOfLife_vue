@@ -361,25 +361,35 @@ export default Vue.extend({
           )
           this.ctx?.stroke()
         }
+      }
+    },
+    drawBorder() {
+      if (this.ctx) {
+        const straddle = 0.5
+        let strokeStyle
+        strokeStyle = this.getColor('BORDER')
+        this.ctx.strokeStyle = strokeStyle
+        this.ctx.lineWidth = 1
+        this.ctx.moveTo(0 + straddle, 0 + straddle)
+        this.ctx.lineTo(this.numCols * this.cellSize + straddle, 0 + straddle)
+        this.ctx.stroke()
+        this.ctx.closePath()
+        this.ctx.moveTo(0 + straddle, 0 + straddle)
+        this.ctx.lineTo(0 + straddle, this.numRows * this.cellSize + straddle)
+        this.ctx.stroke()
+        this.ctx.moveTo(this.numCols * this.cellSize + straddle, 0 + straddle)
+        this.ctx.lineTo(
+          this.numCols * this.cellSize + straddle,
+          this.numRows * this.cellSize + straddle
+        )
+        this.ctx.stroke()
 
-        if (this.borderEnabled) {
-          strokeStyle = this.getColor('BORDER')
-          this.ctx.strokeStyle = strokeStyle
-          this.ctx.lineWidth = 1
-          this.ctx.moveTo(0 + straddle, 0 + straddle)
-          this.ctx.lineTo(this.numCols * this.cellSize + straddle, 0 + straddle)
-          this.ctx.stroke()
-          this.ctx.closePath()
-          this.ctx.moveTo(0 + straddle, 0 + straddle)
-          this.ctx.lineTo(0 + straddle, this.numRows * this.cellSize + straddle)
-          this.ctx.stroke()
-          this.ctx.moveTo(this.numCols * this.cellSize + straddle, 0 + straddle)
-          this.ctx.lineTo(
-            this.numCols * this.cellSize + straddle,
-            this.numRows * this.cellSize + straddle
-          )
-          this.ctx.stroke()
-        }
+        this.ctx.moveTo(0 + straddle, 0 + this.numRows * this.cellSize)
+        this.ctx.lineTo(
+          this.numCols * this.cellSize + straddle,
+          this.numRows * this.cellSize + straddle
+        )
+        this.ctx.stroke()
       }
     },
     async drawGame() {
@@ -434,6 +444,9 @@ export default Vue.extend({
         }
         if (this.gridEnabled) {
           this.drawGrid()
+        }
+        if (this.borderEnabled) {
+          this.drawBorder()
         }
       }
     },
@@ -524,7 +537,7 @@ export default Vue.extend({
         case 'DEAD_CELL':
           return this.darkMode ? '#1F2937' : '#fefefe'
         case 'GRID':
-          return this.darkMode ? '#8a8787' : '#dedede'
+          return this.darkMode ? '#636262' : '#dedede'
         case 'BORDER':
           return this.darkMode ? '#fefefe' : '#1F2937'
       }

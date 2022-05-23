@@ -1,14 +1,14 @@
 <template>
   <div
-    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8 mt-12 pb-48"
+    class="px-2 2xl:px-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8 mt-12 pb-48"
   >
     <div
       v-for="pattern in patternList"
       :key="pattern.details.name"
-      class="overflow-hidden border-2"
+      class="overflow-hidden bg-gray-800/60 p-4 rounded-lg"
     >
       <div
-        class="h-[200px] w-[200px] mx-auto"
+        class="mx-auto w-fit rounded-lg overflow-hidden"
         @click="handleTemplateSelect(pattern)"
       >
         <GridCanvasWrapper
@@ -16,14 +16,14 @@
           :template="pattern.pattern"
         />
       </div>
+      <div class="mt-2 p-2 h-auto w-full">
+        <h4 class="w-full text-center text-lg text-gray-200">
+          {{ pattern.details.name }}
+        </h4>
+      </div>
     </div>
   </div>
 </template>
-<!-- :borderEnabled="borderEnabled"
-          :gridEnabled="showGrid" -->
-<!-- :resetToggle="resetToggle"
-          :clearToggle="clearToggle"
-          :randomToggle="randomToggle" -->
 
 <script lang="ts">
 import Vue from 'vue'

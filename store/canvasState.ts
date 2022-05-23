@@ -5,7 +5,7 @@ export const state = () => ({
   isRunning: false,
   mobileDrawModeOn: false,
   currentGeneration: 0,
-  cellSize: 10,
+  cellSize: 6,
   speed: 100,
   showGrid: false,
   border: false,
