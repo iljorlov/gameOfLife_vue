@@ -1,25 +1,25 @@
 <template>
   <div @mousemove="handleMousemove" @mouseleave="handleMouseLeave">
-    <GolCanvas
-      :canvasWidth="200"
-      :canvasHeight="200"
-      :canvasIdentifier="canvasIdentifier"
+    <CanvasComponent
+      :canvas-width="200"
+      :canvas-height="200"
+      :canvas-identifier="canvasIdentifier"
       :template="template"
-      :cellSize="5"
-      :isRunning="isRunning"
-      :borderEnabled="false"
-      :resetToggle="resetToggle"
+      :cell-size="5"
+      :is-running="isRunning"
+      :border-enabled="false"
+      :reset-toggle="resetToggle"
     />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Canvas from './Canvas.vue'
+import CanvasComponent from '~/components/GOL/CanvasComponent.vue'
 
 export default Vue.extend({
   components: {
-    GolCanvas: Canvas,
+    CanvasComponent,
   },
   props: {
     canvasIdentifier: {
@@ -43,6 +43,7 @@ export default Vue.extend({
     },
     handleMouseLeave() {
       this.isRunning = false
+      this.resetToggle = !this.resetToggle
     },
   },
 })

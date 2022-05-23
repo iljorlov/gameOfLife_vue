@@ -9,7 +9,10 @@
       </label>
     </div>
     <div class="py-1 relative min-w-full">
-      <div class="h-2 bg-gray-200 rounded-full">
+      <div
+        class="h-2 bg-gray-200 rounded-full cursor-pointer"
+        @click="(e) => handleSliderClick(e)"
+      >
         <div
           class="absolute h-2 rounded-full bg-teal-600 w-0"
           :style="`width: ${percentage}%`"
@@ -113,7 +116,8 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.id = uuidv4()
+    const sliderId = uuidv4()
+    this.id = sliderId
     this.value = this.initialValue
     this.percentage = (this.initialValue * 100) / this.max
 
@@ -130,17 +134,30 @@ export default Vue.extend({
       this.isDragging = false
     },
     handleMouseMove(e: MouseEvent) {
-      const slider = document.getElementById(this.id ? this.id : `${this.id}`)
+      if (this.id) {
+        const slider = document.getElementById(this.id)
 
-      if (slider) {
-        const xPos = e.x - slider.getBoundingClientRect().left
-        const val = (xPos / slider.getBoundingClientRect().width) * 100
-        if (val <= 0) {
-          this.percentage = 0
-        } else if (val >= 100) {
-          this.percentage = 100
-        } else {
-          this.percentage = parseFloat(val.toFixed(1))
+        if (slider) {
+          const xPos = e.x - slider.getBoundingClientRect().left
+          const val = (xPos / slider.getBoundingClientRect().width) * 100
+          if (val <= 0) {
+            this.percentage = 0
+          } else if (val >= 100) {
+            this.percentage = 100
+          } else {
+            this.percentage = parseFloat(val.toFixed(1))
+          }
+        }
+      }
+    },
+    handleSliderClick(e: MouseEvent) {
+      if (this.id) {
+        const slider = document.getElementById(this.id)
+        const xOffset = slider?.getBoundingClientRect().x
+
+        if (slider && e.button === 0 && xOffset) {
+          const val = e.x - xOffset
+          this.percentage = val > 100 ? 100 : val < 0 ? 0 : val
         }
       }
     },

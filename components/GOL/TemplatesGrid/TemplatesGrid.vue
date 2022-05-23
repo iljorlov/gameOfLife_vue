@@ -7,9 +7,12 @@
       :key="pattern.details.name"
       class="overflow-hidden border-2"
     >
-      <div class="h-[200px] w-[200px] mx-auto">
+      <div
+        class="h-[200px] w-[200px] mx-auto"
+        @click="handleTemplateSelect(pattern)"
+      >
         <GridCanvasWrapper
-          :canvasIdentifier="pattern.details.name"
+          :canvas-identifier="pattern.details.name"
           :template="pattern.pattern"
         />
       </div>
@@ -22,10 +25,11 @@
           :clearToggle="clearToggle"
           :randomToggle="randomToggle" -->
 
-<script>
-import { patternList } from '../../patterns/patterns'
-import GridCanvasWrapper from './GridCanvasWrapper.vue'
-export default {
+<script lang="ts">
+import Vue from 'vue'
+import { patternList, PatternType } from '~/patterns/patterns'
+import GridCanvasWrapper from '~/components/GOL/TemplatesGrid/GridCanvasWrapper.vue'
+export default Vue.extend({
   components: {
     GridCanvasWrapper,
   },
@@ -44,12 +48,13 @@ export default {
   },
 
   methods: {
-    handleTemplateSelect() {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      this.$store.commit('canvasState/startCanvas')
+    handleTemplateSelect(newPattern: PatternType) {
+      // window.scrollTo({ top: 0, behavior: 'smooth' })
+      this.$store.commit('canvasState/setTemplate', newPattern)
+      this.$store.commit('canvasState/toggleReset')
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped></style>

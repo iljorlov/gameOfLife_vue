@@ -15,21 +15,27 @@
         class="text-gray-800 group-hover:text-slate-50 transition-colors"
       />
     </div>
-    <div @click="resetCanvas">
-      <TemplateCanvas
-        class="border-none bg-white rounded-sm"
+    <div
+      class="bg-white cursor-pointer rounded-sm overflow-hidden"
+      @mousemove="handleMousemove"
+      @mouseleave="handleMouseLeave"
+      @click="resetCanvas"
+    >
+      <CanvasComponent
+        :canvas-width="canvasSize"
+        :canvas-height="canvasSize"
         :canvas-identifier="`${canvasState.selectedPattern.details.name}-menu`"
-        :pattern="canvasState.selectedPattern"
-        :height="84"
-        :width="84"
-        :only-canvas="true"
+        :template="canvasState.selectedPattern.pattern"
+        :cell-size="cellSize"
+        :is-running="previewRunning"
+        :reset-toggle="resetToggle"
+        :border-enabled="false"
       />
     </div>
 
     <div class="h-full py-2 w-fit flex flex-col justify-between items-end">
       <button @click="clearCanvas">Clear</button>
       <button @click="randomizeCanvas">Random</button>
-      <!-- <button @click="resetCanvas">Reload</button> -->
     </div>
   </div>
 </template>
@@ -38,17 +44,44 @@
 import Vue from 'vue'
 import PlayIcon from '../../../UI/Icons/PlayIcon.vue'
 import PauseIcon from '~/components/UI/Icons/PauseIcon.vue'
-import TemplateCanvas from '~/components/GOL/TemplateCanvas.vue'
+import CanvasComponent from '~/components/GOL/CanvasComponent.vue'
 
 export default Vue.extend({
   components: {
     PlayIcon,
     PauseIcon,
-    TemplateCanvas,
+    CanvasComponent,
   },
+  data() {
+    return {
+      resetToggle: false,
+      previewRunning: false,
+      canvasSize: 84,
+    }
+  },
+
   computed: {
-    canvasState(): number {
+    selectedTemplateName() {
+      return this.$store.state.canvasState.selectedPattern.details.name
+    },
+    canvasState() {
       return this.$store.state.canvasState
+    },
+    cellSize() {
+      const width =
+        this.$store.state.canvasState.selectedPattern.pattern[0].length
+      const height =
+        this.$store.state.canvasState.selectedPattern.pattern.length
+      const largestDimension = width > height ? width : height
+      const padding = 16
+      return (this.canvasSize - padding) / largestDimension
+    },
+  },
+  watch: {
+    selectedTemplateName: {
+      handler() {
+        this.resetToggle = !this.resetToggle
+      },
     },
   },
   methods: {
@@ -58,11 +91,25 @@ export default Vue.extend({
     clearCanvas() {
       this.$store.commit('canvasState/toggleClear')
     },
-    resetCanvas() {
-      this.$store.commit('canvasState/toggleReset')
-    },
+
     randomizeCanvas() {
       this.$store.commit('canvasState/toggleRandom')
+    },
+    handleMousemove() {
+      this.previewRunning = true
+    },
+    handleMouseLeave() {
+      this.previewRunning = false
+      this.resetToggle = !this.resetToggle
+    },
+    resetCanvas() {
+      if (this.canvasState.isRunning) {
+        this.$store.commit('canvasState/pauseCanvas')
+      } else {
+        window.scroll({ top: 0, behavior: 'smooth' })
+        this.$store.commit('canvasState/toggleReset')
+        this.$store.commit('canvasState/startCanvas')
+      }
     },
   },
 })

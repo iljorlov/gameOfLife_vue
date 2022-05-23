@@ -1,21 +1,20 @@
 <template>
   <div class="w-full">
-    <MainCanvasWrapper /> <TemplatesGrid /> <ControlsContainer />
+    <div class="px-2 mx-auto"><MainCanvasWrapper /></div>
+    <TemplatesGrid /> <ControlsContainer />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import MainCanvas from '../components/GOL/MainCanvas.vue'
-import MainCanvasWrapper from '../components/GOL/MainCanvasWrapper.vue'
-import TemplatesGrid from '../components/GOL/TemplatesGrid.vue'
-import ControlsContainer from '../components/GOL/GameControls/ControlsWrapper.vue'
+import MainCanvasWrapper from '~/components/GOL/MainCanvas/MainCanvasWrapper.vue'
+import TemplatesGrid from '~/components/GOL/TemplatesGrid/TemplatesGrid.vue'
+import ControlsContainer from '~/components/GOL/GameControls/ControlsWrapper.vue'
 import { NotificationType } from '~/store/notifications'
 
 export default Vue.extend({
   name: 'IndexPage',
   components: {
-    MainCanvas,
     TemplatesGrid,
     ControlsContainer,
     MainCanvasWrapper,

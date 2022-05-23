@@ -8,8 +8,8 @@ export const mergeTwoGrids = (
   if (recipientGridCols <= 0 || recipientGridRows <= 0) {
     return gridToInsert
   }
-  let providedGridCols = gridToInsert[0].length
-  let providedGridRows = gridToInsert.length
+  const providedGridCols = gridToInsert[0].length
+  const providedGridRows = gridToInsert.length
 
   // case for when dimensions are the same
   if (
@@ -19,10 +19,10 @@ export const mergeTwoGrids = (
     return gridToInsert
   }
 
-  let sliceStartX = Math.floor((providedGridCols - recipientGridCols) / 2)
-  let sliceStartY = Math.floor((providedGridRows - recipientGridRows) / 2)
-  let sliceEndX = sliceStartX + recipientGridCols
-  let sliceEndY = sliceStartY + recipientGridRows
+  const sliceStartX = Math.floor((providedGridCols - recipientGridCols) / 2)
+  const sliceStartY = Math.floor((providedGridRows - recipientGridRows) / 2)
+  const sliceEndX = sliceStartX + recipientGridCols
+  const sliceEndY = sliceStartY + recipientGridRows
 
   if (
     providedGridCols >= recipientGridCols &&
@@ -33,14 +33,22 @@ export const mergeTwoGrids = (
       .map((i) => i.slice(sliceStartX, sliceEndX))
   }
 
-  let grid: number[][] = generateEmptyGrid(recipientGridRows, recipientGridCols)
+  const grid: number[][] = generateEmptyGrid(
+    recipientGridRows,
+    recipientGridCols
+  )
 
   const offsetX = Math.floor((grid[0].length - gridToInsert[0].length) / 2)
+
   const offsetY = Math.floor((grid.length - gridToInsert.length) / 2)
 
   for (let i = 0; i < gridToInsert.length; i++) {
     for (let j = 0; j < gridToInsert[0].length; j++) {
-      grid[i + offsetY][j + offsetX] = gridToInsert[i][j]
+      const yPos = Math.max((i + offsetY) % grid.length, 0)
+      const xPos = Math.max((j + offsetX) % grid[0].length, 0)
+      const valToInsert = gridToInsert[i][j]
+
+      grid[yPos][xPos] = valToInsert
     }
   }
 

@@ -16,7 +16,7 @@ export const state = () => ({
 
 type CanvasStateType = ReturnType<typeof state>
 
-export const mutations: MutationTree<CanvasStateType, CanvasStateType> = {
+export const mutations: MutationTree<CanvasStateType> = {
   toggleClear: (state: CanvasStateType) => {
     state.clearToggle = !state.clearToggle
   },
@@ -35,11 +35,17 @@ export const mutations: MutationTree<CanvasStateType, CanvasStateType> = {
   pauseCanvas: (state: CanvasStateType) => {
     state.isRunning = false
   },
-  toggleGrid: (state: CanvasStateType) => {
-    state.showGrid = !state.showGrid
+  toggleGridOn: (state: CanvasStateType) => {
+    state.showGrid = true
   },
-  toggleBorder: (state: CanvasStateType) => {
-    state.border = !state.border
+  toggleGridOff: (state: CanvasStateType) => {
+    state.showGrid = false
+  },
+  toggleBorderOn: (state: CanvasStateType) => {
+    state.border = true
+  },
+  toggleBorderOff: (state: CanvasStateType) => {
+    state.border = false
   },
   setCanvasSpeed: (state: CanvasStateType, newSpeed: number) => {
     state.speed = newSpeed

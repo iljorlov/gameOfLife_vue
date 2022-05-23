@@ -1,24 +1,42 @@
 <template>
-  <canvas
-    :id="`canvas-${canvasIdentifier}`"
-    :class="`transition-all delay-700 duration-1000`"
-    :height="canvasHeight"
-    :width="canvasWidth"
-    @mousemove="handleHover"
-    @mouseleave="handleMouseLeave"
-    @mousedown="handleMouseDown"
-  />
+  <div class="w-full h-full overflow-hidden">
+    <div
+      v-if="isMainCanvas"
+      :class="`${ctx ? 'hidden' : 'flex h-[80vh] items-center justify-center'}`"
+    >
+      <div class="h-16 w-16 relative animate-spin">
+        <div
+          class="bg-slate-800/70 animate-pulse h-6 w-6 absolute top-0 left-1/2 -translate-x-1/2 rounded-full"
+        ></div>
+        <div
+          class="bg-slate-800/70 delay-500 animate-pulse h-6 w-6 absolute bottom-0 -left-1 rounded-full"
+        ></div>
+        <div
+          class="bg-slate-800/70 delay-1000 animate-pulse h-6 w-6 absolute bottom-0 -right-1 rounded-full"
+        ></div>
+      </div>
+    </div>
+    <canvas
+      :id="`canvas-${canvasIdentifier}`"
+      :class="`transition-all delay-700 duration-1000`"
+      :height="canvasHeight"
+      :width="canvasWidth"
+      @mousemove="handleHover"
+      @mouseleave="handleMouseLeave"
+      @mousedown="handleMouseDown"
+    />
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import generateEmptyGrid from '../../utils/generateEmptyGrid'
-import generateRandomGrid from '../../utils/generateRandomGrid'
-
-import countNeighborsSeamless from '../../utils/countNeighborsSeamless'
-import countNeighborsBorder from '../../utils/countNeighborsBorder'
+// import generateEmptyGrid from '~/utils/generateEmptyGrid'
+import generateRandomGrid from '~/utils/generateRandomGrid'
+import sleep from '~/utils/sleep'
+import countNeighborsSeamless from '~/utils/countNeighborsSeamless'
+import countNeighborsBorder from '~/utils/countNeighborsBorder'
 import mergeTwoGrids from '~/utils/mergeTwoGrids'
-import sleep from '../../utils/sleep'
+import { NotificationType } from '~/store/notifications'
 export default Vue.extend({
   props: {
     canvasIdentifier: {
@@ -81,6 +99,23 @@ export default Vue.extend({
       grid: [] as number[][],
     }
   },
+  computed: {
+    selectedPattern(): number[][] {
+      return this.$store.state.canvasState.selectedPattern.pattern
+    },
+    speed(): number {
+      return this.$store.state.canvasState.speed
+    },
+    selectedPatternName(): string {
+      return this.$store.state.canvasState.selectedPattern.details.name
+    },
+    numRows(): number {
+      return Math.floor(this.canvasHeight / this.cellSize)
+    },
+    numCols(): number {
+      return Math.floor(this.canvasWidth / this.cellSize)
+    },
+  },
   watch: {
     canvasWidth: {
       handler() {
@@ -103,11 +138,6 @@ export default Vue.extend({
       },
       deep: true,
     },
-    selectedPatternName: {
-      handler() {
-        this.setGridPattern(this.selectedPattern)
-      },
-    },
     isRunning: {
       handler() {
         if (this.isRunning) {
@@ -119,8 +149,10 @@ export default Vue.extend({
       handler() {
         if (this.isMainCanvas) {
           this.resetGeneration()
+          this.setGridPattern(this.selectedPattern)
+        } else {
+          this.setGridPattern(this.template)
         }
-        this.setGridPattern(this.selectedPattern)
       },
     },
     clearToggle: {
@@ -144,28 +176,11 @@ export default Vue.extend({
       `canvas-${this.canvasIdentifier}`
     )! as HTMLCanvasElement
     const ctx = canvas.getContext('2d')!
-    // ctx.translate(0.5 * this.cellSize, 0.5 * this.cellSize)
+
     this.ctx = ctx
     this.initGrid(this.template)
   },
 
-  computed: {
-    selectedPattern(): number[][] {
-      return this.$store.state.canvasState.selectedPattern.pattern
-    },
-    speed(): number {
-      return this.$store.state.canvasState.speed
-    },
-    selectedPatternName(): string {
-      return this.$store.state.canvasState.selectedPattern.details.name
-    },
-    numRows(): number {
-      return Math.floor(this.canvasHeight / this.cellSize)
-    },
-    numCols(): number {
-      return Math.floor(this.canvasWidth / this.cellSize)
-    },
-  },
   methods: {
     toggleMode() {
       if (this.isRunning) {
@@ -183,14 +198,11 @@ export default Vue.extend({
       }
       this.setGridPattern(newGrid)
       this.getNextGeneration()
-      this.drawGame()
     },
     handleMouseLeave() {
       if (this.isMainCanvas) {
         this.hoveredCell.x = -1
         this.hoveredCell.y = -1
-      } else {
-        this.setGridPattern(this.template)
       }
     },
     handleMouseDown() {
@@ -212,7 +224,7 @@ export default Vue.extend({
       }
     },
     handleHover(e: MouseEvent) {
-      if (this.isMainCanvas) {
+      if (this.isMainCanvas && e) {
         // handles mouse hover and down
         try {
           const rect = this.ctx!.canvas.getBoundingClientRect()
@@ -250,7 +262,7 @@ export default Vue.extend({
             }
           }
         } catch (error) {
-          const notification = {
+          const notification: NotificationType = {
             lifeDurationSeconds: 6,
             text: 'Error',
             title: 'Hover fail',
@@ -262,68 +274,70 @@ export default Vue.extend({
       }
     },
     drawGrid() {
-      for (let i = 0; i <= this.numCols; i++) {
-        this.ctx?.beginPath()
-        this.ctx!.lineWidth = 0.5
-        this.ctx!.strokeStyle = '#bdbdbd'
-        this.ctx?.moveTo(this.cellSize * i, 0)
-        this.ctx?.lineTo(this.cellSize * i, this.cellSize * this.numRows)
-        this.ctx?.stroke()
-      }
-      for (let i = 0; i <= this.numRows; i++) {
-        this.ctx?.beginPath()
-        this.ctx!.lineWidth = 0.5
-        this.ctx!.strokeStyle = '#bdbdbd'
-        this.ctx?.moveTo(0, this.cellSize * i)
-        this.ctx?.lineTo(this.cellSize * this.numCols, this.cellSize * i)
-        this.ctx?.stroke()
-      }
-    },
-    drawGame() {
-      if (!this.ctx) {
-        return
-      }
-      this.clearCanvas()
-      this.ctx!.fillStyle = 'black'
-      const size = this.cellSize
-      const grid = this.grid
-
-      if (this.gridEnabled) {
-        this.drawGrid()
-      }
-
-      const width = grid[0].length
-      const height = grid.length
-
-      for (let i = 0; i < width; i++) {
-        for (let j = 0; j < height; j++) {
-          const xOffset = size * i
-          const yOffset = size * j
-          if (grid[j][i] === 0) {
-            continue
-          }
-          this.ctx?.fillRect(xOffset, yOffset, size, size)
+      if (this.ctx) {
+        for (let i = 0; i <= this.numCols; i++) {
+          this.ctx?.beginPath()
+          this.ctx!.lineWidth = 0.5
+          this.ctx!.strokeStyle = '#bdbdbd'
+          this.ctx?.moveTo(this.cellSize * i, 0)
+          this.ctx?.lineTo(this.cellSize * i, this.cellSize * this.numRows)
+          this.ctx?.stroke()
+        }
+        for (let i = 0; i <= this.numRows; i++) {
+          this.ctx?.beginPath()
+          this.ctx!.lineWidth = 0.5
+          this.ctx!.strokeStyle = '#bdbdbd'
+          this.ctx?.moveTo(0, this.cellSize * i)
+          this.ctx?.lineTo(this.cellSize * this.numCols, this.cellSize * i)
+          this.ctx?.stroke()
         }
       }
+    },
+    async drawGame() {
+      await this.$nextTick()
+      if (this.ctx) {
+        this.clearCanvas()
+        this.ctx.fillStyle = 'black'
+        const size = this.cellSize
+        const grid = this.grid
 
-      // drawing hovered cell
-      if (
-        this.hoveredCell.x >= 0 &&
-        this.hoveredCell.x < this.grid[0].length &&
-        this.hoveredCell.y >= 0 &&
-        this.hoveredCell.y < this.grid.length
-      ) {
-        this.ctx.fillStyle =
-          this.grid[this.hoveredCell.y][this.hoveredCell.x] === 0
-            ? 'pink'
-            : 'gray'
-        this.ctx?.fillRect(
-          size * this.hoveredCell.x,
-          size * this.hoveredCell.y,
-          size,
-          size
-        )
-        this.ctx!.fillStyle = 'black'
+        if (this.gridEnabled) {
+          this.drawGrid()
+        }
+
+        const width = grid[0].length
+        const height = grid.length
+
+        for (let i = 0; i < width; i++) {
+          for (let j = 0; j < height; j++) {
+            const xOffset = size * i
+            const yOffset = size * j
+            if (grid[j][i] === 0) {
+              continue
+            }
+            this.ctx.fillRect(xOffset, yOffset, size, size)
+          }
+        }
+
+        // drawing hovered cell
+        if (
+          this.hoveredCell.x >= 0 &&
+          this.hoveredCell.x < this.grid[0].length &&
+          this.hoveredCell.y >= 0 &&
+          this.hoveredCell.y < this.grid.length
+        ) {
+          this.ctx.fillStyle =
+            this.grid[this.hoveredCell.y][this.hoveredCell.x] === 0
+              ? 'pink'
+              : 'gray'
+          this.ctx?.fillRect(
+            size * this.hoveredCell.x,
+            size * this.hoveredCell.y,
+            size,
+            size
+          )
+          this.ctx.fillStyle = 'black'
+        }
       }
     },
     async getNextGeneration() {
@@ -333,10 +347,11 @@ export default Vue.extend({
       if (!this.isRunning) {
         return
       }
-
+      let aliveCount = 0
       const gridCopy = JSON.parse(JSON.stringify(this.grid))
       for (let y = 0; y < this.grid.length; y++) {
         for (let x = 0; x < this.grid[0].length; x++) {
+          aliveCount += this.grid[y][x]
           let neighbors
           if (this.borderEnabled) {
             neighbors = countNeighborsBorder(this.grid, x, y)
@@ -355,18 +370,20 @@ export default Vue.extend({
       if (this.speed !== 100) {
         await sleep(100 - this.speed)
       }
-      this.drawGame()
       if (this.isMainCanvas) {
         this.incrementGeneration()
+        console.log('increment')
       }
+
+      if (aliveCount === 0) {
+        this.handleEmptyCanvas()
+        return
+      }
+      this.drawGame()
 
       window.requestAnimationFrame(this.getNextGeneration)
     },
     clearCanvas() {
-      // if (!this.ctx) {
-      //   return
-      // }
-      // this.ctx?.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
       this.ctx?.clearRect(
         -0.5 * this.cellSize,
         -0.5 * this.cellSize,
@@ -390,6 +407,18 @@ export default Vue.extend({
     },
     resetGeneration() {
       this.$store.commit('canvasState/resetCurrentGeneration')
+    },
+    handleEmptyCanvas() {
+      const notification: NotificationType = {
+        lifeDurationSeconds: 4,
+        title: 'Canvas paused',
+        text: 'It appears there is no more life on canvas',
+        type: 'INFO',
+        uuid: '',
+      }
+      this.$store.commit('canvasState/pauseCanvas')
+
+      this.$store.commit('notifications/addNotification', notification)
     },
   },
 })

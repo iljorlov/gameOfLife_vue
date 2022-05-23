@@ -1,47 +1,33 @@
 <template>
   <div
+    id="main-canvas-wrapper"
     :class="`mt-6 w-full border cursor-crosshair ${
       borderEnabled ? 'border-black' : 'border-transparent'
     }`"
-    id="main-canvas-wrapper"
   >
-    <GolCanvas
-      :canvasWidth="canvasWidth"
-      :canvasHeight="canvasHeigth"
-      canvasIdentifier="main-test"
+    <CanvasComponent
+      :canvas-width="canvasWidth"
+      :canvas-height="canvasHeigth"
+      canvas-identifier="main-test"
       :template="selectedPattern"
-      :resetToggle="resetToggle"
-      :clearToggle="clearToggle"
-      :randomToggle="randomToggle"
-      :cellSize="cellSize"
-      :isRunning="isRunning"
-      :borderEnabled="borderEnabled"
-      :gridEnabled="showGrid"
-      :isMainCanvas="true"
+      :reset-toggle="resetToggle"
+      :clear-toggle="clearToggle"
+      :random-toggle="randomToggle"
+      :cell-size="cellSize"
+      :is-running="isRunning"
+      :border-enabled="borderEnabled"
+      :grid-enabled="showGrid"
+      :is-main-canvas="true"
     />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Canvas from './Canvas.vue'
+import CanvasComponent from '~/components/GOL/CanvasComponent.vue'
 export default Vue.extend({
   components: {
-    GolCanvas: Canvas,
-  },
-  mounted() {
-    window.addEventListener('resize', () => {
-      const wrapper = document.getElementById('main-canvas-wrapper')
-      this.canvasWidth = wrapper!.getBoundingClientRect().width
-    })
-    const wrapper = document.getElementById('main-canvas-wrapper')
-    this.canvasWidth = wrapper!.getBoundingClientRect().width
-  },
-  destroyed() {
-    window.removeEventListener('resize', () => {
-      const wrapper = document.getElementById('main-canvas-wrapper')
-      this.canvasWidth = wrapper!.getBoundingClientRect().width
-    })
+    CanvasComponent,
   },
   data() {
     return {
@@ -50,8 +36,13 @@ export default Vue.extend({
   },
   computed: {
     canvasHeigth() {
-      const ratio = 1280 / 720
-      return this.canvasWidth / ratio
+      const tabletPlusRatio = 1280 / 720
+      const phoneRatio = 3 / 4
+      if (this.canvasWidth > 768) {
+        return this.canvasWidth / tabletPlusRatio
+      } else {
+        return this.canvasWidth / phoneRatio
+      }
     },
     cellSize(): number {
       return this.$store.state.canvasState.cellSize
@@ -83,6 +74,24 @@ export default Vue.extend({
     randomToggle(): boolean {
       return this.$store.state.canvasState.randomToggle
     },
+  },
+  mounted() {
+    window.addEventListener('resize', () => {
+      const wrapper = document.getElementById('main-canvas-wrapper')
+      if (wrapper) {
+        this.canvasWidth = wrapper.getBoundingClientRect().width
+      }
+    })
+    const wrapper = document.getElementById('main-canvas-wrapper')
+    this.canvasWidth = wrapper!.getBoundingClientRect().width
+  },
+  destroyed() {
+    window.removeEventListener('resize', () => {
+      const wrapper = document.getElementById('main-canvas-wrapper')
+      if (wrapper) {
+        this.canvasWidth = wrapper.getBoundingClientRect().width
+      }
+    })
   },
 })
 </script>
