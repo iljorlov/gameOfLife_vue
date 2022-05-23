@@ -101,13 +101,6 @@ export default Vue.extend({
   },
 
   watch: {
-    // initialValue: {
-    //   handler() {
-    //     this.value = this.initialValue
-    //     this.percentage = (this.initialValue * 100) / this.max
-    //   },
-    //   immediate: true,
-    // },
     isDragging() {
       if (this.isDragging) {
         document.addEventListener('mousemove', this.handleMouseMove)
@@ -163,7 +156,7 @@ export default Vue.extend({
         const sliderRect = slider?.getBoundingClientRect()
         const xOffset = sliderRect?.x
 
-        if (slider && e.button === 0 && xOffset) {
+        if (slider && e.button === 0 && xOffset && sliderRect) {
           const val = e.x - xOffset
           const percentage = (val / sliderRect.width) * 100
           this.percentage =

@@ -18,7 +18,7 @@
     </div>
     <canvas
       :id="`canvas-${canvasIdentifier}`"
-      :class="`transition-all delay-700 duration-1000`"
+      :class="`transition-all`"
       :height="canvasHeight"
       :width="canvasWidth"
       @mousemove="handleHover"
@@ -37,6 +37,7 @@ import countNeighborsSeamless from '~/utils/countNeighborsSeamless'
 import countNeighborsBorder from '~/utils/countNeighborsBorder'
 import mergeTwoGrids from '~/utils/mergeTwoGrids'
 import { NotificationType } from '~/store/notifications'
+
 export default Vue.extend({
   props: {
     canvasIdentifier: {
@@ -100,6 +101,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    darkMode(): boolean {
+      return this.$store.state.darkMode
+    },
     mobileDrawModeOn(): boolean {
       return this.$store.state.canvasState.mobileDrawModeOn
     },
@@ -120,6 +124,16 @@ export default Vue.extend({
     },
   },
   watch: {
+    borderEnabled: {
+      handler() {
+        this.drawGame()
+      },
+    },
+    darkMode: {
+      handler() {
+        this.drawGame()
+      },
+    },
     canvasWidth: {
       handler() {
         this.setGridPattern(this.grid)
@@ -322,38 +336,71 @@ export default Vue.extend({
     // },
     drawGrid() {
       if (this.ctx) {
+        const lineWidth = 0.5
+        let strokeStyle = this.getColor('GRID')
+        const straddle = 0.5 // lines in canvas need to have an offset offset of 0.5px
         for (let i = 0; i <= this.numCols; i++) {
           this.ctx?.beginPath()
-          this.ctx!.lineWidth = 0.5
-          this.ctx!.strokeStyle = '#bdbdbd'
-          this.ctx?.moveTo(this.cellSize * i, 0)
-          this.ctx?.lineTo(this.cellSize * i, this.cellSize * this.numRows)
+          this.ctx!.lineWidth = lineWidth
+          this.ctx!.strokeStyle = strokeStyle
+          this.ctx?.moveTo(this.cellSize * i + straddle, 0 + straddle)
+          this.ctx?.lineTo(
+            this.cellSize * i + straddle,
+            this.cellSize * this.numRows + straddle
+          )
           this.ctx?.stroke()
         }
         for (let i = 0; i <= this.numRows; i++) {
           this.ctx?.beginPath()
-          this.ctx!.lineWidth = 0.5
-          this.ctx!.strokeStyle = '#bdbdbd'
-          this.ctx?.moveTo(0, this.cellSize * i)
-          this.ctx?.lineTo(this.cellSize * this.numCols, this.cellSize * i)
+          this.ctx!.lineWidth = lineWidth
+          this.ctx!.strokeStyle = strokeStyle
+          this.ctx?.moveTo(0 + straddle, this.cellSize * i + straddle)
+          this.ctx?.lineTo(
+            this.cellSize * this.numCols + straddle,
+            this.cellSize * i + straddle
+          )
           this.ctx?.stroke()
+        }
+
+        if (this.borderEnabled) {
+          strokeStyle = this.getColor('BORDER')
+          this.ctx.strokeStyle = strokeStyle
+          this.ctx.lineWidth = 1
+          this.ctx.moveTo(0 + straddle, 0 + straddle)
+          this.ctx.lineTo(this.numCols * this.cellSize + straddle, 0 + straddle)
+          this.ctx.stroke()
+          this.ctx.closePath()
+          this.ctx.moveTo(0 + straddle, 0 + straddle)
+          this.ctx.lineTo(0 + straddle, this.numRows * this.cellSize + straddle)
+          this.ctx.stroke()
+          this.ctx.moveTo(this.numCols * this.cellSize + straddle, 0 + straddle)
+          this.ctx.lineTo(
+            this.numCols * this.cellSize + straddle,
+            this.numRows * this.cellSize + straddle
+          )
+          this.ctx.stroke()
         }
       }
     },
     async drawGame() {
+      const straddle = 0.5
       await this.$nextTick()
       if (this.ctx) {
         this.clearCanvas()
-        this.ctx.fillStyle = 'black'
         const size = this.cellSize
         const grid = this.grid
 
-        if (this.gridEnabled) {
-          this.drawGrid()
-        }
-
         const width = grid[0].length
         const height = grid.length
+
+        // first color the background
+        this.ctx.fillStyle = this.getColor('DEAD_CELL')
+        this.ctx.fillRect(
+          0,
+          0,
+          this.numCols * this.cellSize + straddle,
+          this.numRows * this.cellSize + straddle
+        )
 
         for (let i = 0; i < width; i++) {
           for (let j = 0; j < height; j++) {
@@ -362,6 +409,7 @@ export default Vue.extend({
             if (grid[j][i] === 0) {
               continue
             }
+            this.ctx.fillStyle = this.getColor('ALIVE_CELL')
             this.ctx.fillRect(xOffset, yOffset, size, size)
           }
         }
@@ -383,7 +431,9 @@ export default Vue.extend({
             size,
             size
           )
-          this.ctx.fillStyle = 'black'
+        }
+        if (this.gridEnabled) {
+          this.drawGrid()
         }
       }
     },
@@ -465,6 +515,19 @@ export default Vue.extend({
       this.$store.commit('canvasState/pauseCanvas')
 
       this.$store.commit('notifications/addNotification', notification)
+    },
+
+    getColor(item: 'DEAD_CELL' | 'ALIVE_CELL' | 'GRID' | 'BORDER'): string {
+      switch (item) {
+        case 'ALIVE_CELL':
+          return this.darkMode ? '#E1E2E4' : '#1F2937'
+        case 'DEAD_CELL':
+          return this.darkMode ? '#1F2937' : '#fefefe'
+        case 'GRID':
+          return this.darkMode ? '#8a8787' : '#dedede'
+        case 'BORDER':
+          return this.darkMode ? '#fefefe' : '#1F2937'
+      }
     },
   },
 })

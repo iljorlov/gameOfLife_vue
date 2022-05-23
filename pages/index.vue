@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="px-2 mx-auto"><MainCanvasWrapper /></div>
+    <div class="px-2 lg:px-0 mx-auto"><MainCanvasWrapper /></div>
     <TemplatesGrid /> <ControlsContainer />
   </div>
 </template>

@@ -1,10 +1,5 @@
 <template>
-  <div
-    id="main-canvas-wrapper"
-    :class="`mt-3 md:mt-6 w-full border cursor-crosshair ${
-      borderEnabled ? 'border-black' : 'border-transparent'
-    }`"
-  >
+  <div id="main-canvas-wrapper" :class="`mt-3 md:mt-6 w-full `">
     <CanvasComponent
       :canvas-width="canvasWidth"
       :canvas-height="canvasHeigth"
@@ -35,10 +30,10 @@ export default Vue.extend({
     }
   },
   computed: {
-    canvasHeigth() {
+    canvasHeigth(): number {
       const tabletPlusRatio = 1280 / 720
       const phoneRatio = 3 / 4
-      if (this.canvasWidth > 768) {
+      if (this.canvasWidth && this.canvasWidth > 768) {
         return this.canvasWidth / tabletPlusRatio
       } else {
         return this.canvasWidth / phoneRatio

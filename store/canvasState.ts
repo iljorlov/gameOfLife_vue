@@ -7,7 +7,7 @@ export const state = () => ({
   currentGeneration: 0,
   cellSize: 10,
   speed: 100,
-  showGrid: true,
+  showGrid: false,
   border: false,
   selectedPattern: patternList[0] as PatternType,
   clearToggle: false,
@@ -15,7 +15,7 @@ export const state = () => ({
   randomToggle: false,
 })
 
-type CanvasStateType = ReturnType<typeof state>
+export type CanvasStateType = ReturnType<typeof state>
 
 export const mutations: MutationTree<CanvasStateType> = {
   toggleClear: (state: CanvasStateType) => {

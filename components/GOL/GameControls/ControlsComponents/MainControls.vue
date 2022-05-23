@@ -45,7 +45,7 @@ import Vue from 'vue'
 import PlayIcon from '../../../UI/Icons/PlayIcon.vue'
 import PauseIcon from '~/components/UI/Icons/PauseIcon.vue'
 import CanvasComponent from '~/components/GOL/CanvasComponent.vue'
-
+import { CanvasStateType } from '~/store/canvasState'
 export default Vue.extend({
   components: {
     PlayIcon,
@@ -61,13 +61,13 @@ export default Vue.extend({
   },
 
   computed: {
-    selectedTemplateName() {
+    selectedTemplateName(): string {
       return this.$store.state.canvasState.selectedPattern.details.name
     },
-    canvasState() {
+    canvasState(): CanvasStateType {
       return this.$store.state.canvasState
     },
-    cellSize() {
+    cellSize(): number {
       const width =
         this.$store.state.canvasState.selectedPattern.pattern[0].length
       const height =
@@ -103,7 +103,7 @@ export default Vue.extend({
       this.resetToggle = !this.resetToggle
     },
     resetCanvas() {
-      if (this.canvasState.isRunning) {
+      if (this.canvasState && this.canvasState.isRunning) {
         this.$store.commit('canvasState/pauseCanvas')
       } else {
         window.scroll({ top: 0, behavior: 'smooth' })

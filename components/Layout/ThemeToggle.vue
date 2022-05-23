@@ -6,20 +6,19 @@
       @isChecked="(e) => toggleTheme(e)"
       ><MoonIcon
         :style="{
-          transform: `translateX(${darkMode ? '2' : '26'}px)`,
+          transform: `translateX(${darkMode ? '4' : '24'}px) translateY(-1px)`,
           opacity: `${darkMode ? '1' : '0'}`,
         }"
         class="h-4 w-4 absolute -translate-y-1/2 left-0 transition-all text-yellow-400"
       />
       <SunIcon
         :style="{
-          transform: `translateX(${darkMode ? '2' : '22'}px)`,
+          transform: `translateX(${darkMode ? '2' : '24'}px)`,
           opacity: `${darkMode ? '0' : '1'}`,
         }"
         class="h-4 w-4 absolute -translate-y-1/2 left-0 transition-all text-yellow-400"
       />
     </CustomToggle>
-    {{ darkMode }}
   </div>
 </template>
 

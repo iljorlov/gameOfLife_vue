@@ -1,5 +1,7 @@
 <template>
-  <div class="mx-auto min-h-[100vh] h-full flex flex-col justify-between">
+  <div
+    class="mx-auto min-h-[100vh] h-full flex flex-col justify-between bg-gray-50 dark:bg-gray-900"
+  >
     <div class="relative">
       <NotificationsContainer />
       <HeaderLayout />
@@ -21,9 +23,3 @@ export default {
   },
 }
 </script>
-
-<style>
-html {
-  background: #eeeeee;
-}
-</style>
