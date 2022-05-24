@@ -17,7 +17,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import CanvasComponent from '~/components/GOL/CanvasComponent.vue'
-
+import { RootState } from '~/store'
 export default Vue.extend({
   components: {
     CanvasComponent,
@@ -34,7 +34,7 @@ export default Vue.extend({
   },
   computed: {
     ...mapState({
-      gridCompact: (state) => state.gridCompact,
+      gridCompact: (state) => (state as RootState).gridCompact,
     }),
     width(): number {
       return this.gridCompact ? 140 : 200

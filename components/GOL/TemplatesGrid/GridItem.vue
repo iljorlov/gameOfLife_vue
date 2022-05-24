@@ -91,6 +91,7 @@ import Vue from 'vue'
 import { mapState } from 'vuex'
 import GridCanvasWrapper from '~/components/GOL/TemplatesGrid/GridCanvasWrapper.vue'
 import { PatternType } from '~/patterns/patterns'
+import { RootState } from '~/store'
 export default Vue.extend({
   components: { GridCanvasWrapper },
   props: {
@@ -105,7 +106,7 @@ export default Vue.extend({
   },
   computed: {
     ...mapState({
-      gridCompact: (state) => state.gridCompact,
+      gridCompact: (state) => (state as RootState).gridCompact,
     }),
     patternName(): string {
       return this.pattern.details.name.length > 18

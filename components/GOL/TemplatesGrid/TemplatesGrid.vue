@@ -48,6 +48,7 @@ import { patternList } from '~/patterns/patterns'
 import GridItem from '~/components/GOL/TemplatesGrid/GridItem.vue'
 import H2Header from '~/components/UI/H2Header.vue'
 import GridIcon from '~/components/UI/Icons/GridIcon.vue'
+import { RootState } from '~/store'
 export default Vue.extend({
   components: {
     GridItem,
@@ -56,7 +57,7 @@ export default Vue.extend({
   },
   computed: {
     ...mapState({
-      gridCompact: (state) => state.gridCompact,
+      gridCompact: (state) => (state as RootState).gridCompact,
     }),
   },
   data() {
