@@ -1,40 +1,21 @@
 <template>
   <footer
-    class="bg-white border-t border-gray-200 dark:border-gray-700 shadow-md dark:bg-gray-800 h-[88px] md:h-[68px]"
+    class="bg-white border-t border-gray-200 dark:border-gray-700 dark:bg-gray-800 min-h-[68px]"
   >
     <div
-      class="max-w-[1280px] p-4 shrink-0 mx-auto md:flex md:items-center md:justify-between md:p-6"
+      class="max-w-[1280px] px-4 py-4 shrink-0 mx-auto md:flex md:items-center md:justify-between md:py-6"
     >
       <a href="https://github.com/iljorlov" target="_blank"
         ><div
-          class="text-sm cursor-pointer w-fit sm:text-center dark:text-gray-400 flex items-center justify-between space-x-2"
+          class="text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors rounded py-1 px-1 w-fit sm:text-center dark:text-gray-400 flex items-center justify-between space-x-2"
         >
-          <img class="h-6 w-6 rounded-sm" src="~/assets/GitHub-Mark.png" />
+          <img class="h-7 w-7 rounded-sm" src="~/assets/GitHub-Mark.png" />
           <span
-            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-500 hover:text-gray-600 transition-colors"
+            class="text-gray-900 text-base dark:text-gray-400 dark:hover:text-gray-50 hover:text-black transition-colors"
             >iljorlov</span
           >
-          <!-- © 2022 -->
-          <!-- <a href="https://flowbite.com" class="hover:underline">Flowbite™</a>. -->
-          <!-- All Rights Reserved. -->
         </div></a
       >
-      <ul
-        class="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0"
-      >
-        <li>
-          <a href="#" class="mr-4 hover:underline md:mr-6">About</a>
-        </li>
-        <li>
-          <a href="#" class="mr-4 hover:underline md:mr-6">Privacy Policy</a>
-        </li>
-        <li>
-          <a href="#" class="mr-4 hover:underline md:mr-6">Licensing</a>
-        </li>
-        <li>
-          <a href="#" class="hover:underline">Contact</a>
-        </li>
-      </ul>
     </div>
   </footer>
 </template>

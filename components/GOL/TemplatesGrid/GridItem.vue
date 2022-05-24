@@ -52,7 +52,7 @@
     </div>
     <div
       v-else
-      class="h-full w-full rounded-lg bg-gray-600 text-gray-50 py-4 flex items-center justify-center"
+      class="h-full w-full rounded-lg bg-gray-300 text-gray-900 dark:bg-gray-600 dark:text-gray-50 py-4 flex items-center justify-center"
     >
       No info yet, sorry 🤔
     </div>

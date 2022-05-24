@@ -327,7 +327,6 @@ export default Vue.extend({
             uuid: '',
           }
           this.$store.commit('notifications/addNotification', notification)
-          console.log(error)
         }
       }
     },
@@ -337,7 +336,7 @@ export default Vue.extend({
     drawGrid() {
       if (this.ctx) {
         const lineWidth = 0.5
-        let strokeStyle = this.getColor('GRID')
+        const strokeStyle = this.getColor('GRID')
         const straddle = 0.5 // lines in canvas need to have an offset offset of 0.5px
         for (let i = 0; i <= this.numCols; i++) {
           this.ctx?.beginPath()
@@ -366,8 +365,7 @@ export default Vue.extend({
     drawBorder() {
       if (this.ctx) {
         const straddle = 0.5
-        let strokeStyle
-        strokeStyle = this.getColor('BORDER')
+        const strokeStyle = this.getColor('BORDER')
         this.ctx.strokeStyle = strokeStyle
         this.ctx.lineWidth = 1
         this.ctx.moveTo(0 + straddle, 0 + straddle)

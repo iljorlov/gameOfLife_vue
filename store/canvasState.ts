@@ -1,4 +1,4 @@
-import { ActionTree, MutationTree } from 'vuex'
+import { MutationTree } from 'vuex'
 import { patternList, PatternType } from '../patterns/patterns'
 
 export const state = () => ({

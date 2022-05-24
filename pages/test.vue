@@ -1,9 +1,19 @@
 <template>
-  <div><button @click="toggleGreet">click</button></div>
+  <div>
+    <div v-if="process.env.NODE_ENV === 'dev'">
+      <button @click="toggleGreet">click</button>
+    </div>
+    <WipPage v-else></WipPage>
+  </div>
 </template>
 
 <script>
+import { WipPage } from '~/components/WipPage/WipPage.vue'
 export default {
+  name: 'TestPage',
+  components: {
+    WipPage,
+  },
   data() {
     return {
       grid: [],
@@ -11,10 +21,10 @@ export default {
   },
   methods: {
     toggleGreet() {
-      import('../src/pkg/gol_wasm').then(({ Game }) => {
-        const game = new Game()
-        console.log(game.get_board())
-      })
+      // import('../src/pkg/gol_wasm').then(({ Game }) => {
+      //   const game = new Game()
+      //   console.log(game.get_board())
+      // })
     },
   },
 }

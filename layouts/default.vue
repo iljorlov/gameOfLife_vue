@@ -5,7 +5,7 @@
     <div class="relative">
       <NotificationsContainer />
       <HeaderLayout />
-      <div class="max-w-[1280px] h-full w-full mx-auto"><Nuxt /></div>
+      <div class="max-w-[1280px] h-full w-full mx-auto px-4"><Nuxt /></div>
     </div>
     <FooterLayout />
   </div>
