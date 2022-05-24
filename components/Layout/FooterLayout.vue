@@ -1,5 +1,7 @@
 <template>
-  <footer class="bg-white shadow dark:bg-gray-800 h-[88px] md:h-[68px]">
+  <footer
+    class="bg-white border-t border-gray-200 dark:border-gray-700 shadow-md dark:bg-gray-800 h-[88px] md:h-[68px]"
+  >
     <div
       class="max-w-[1280px] p-4 shrink-0 mx-auto md:flex md:items-center md:justify-between md:p-6"
     >
@@ -8,7 +10,10 @@
           class="text-sm cursor-pointer w-fit sm:text-center dark:text-gray-400 flex items-center justify-between space-x-2"
         >
           <img class="h-6 w-6 rounded-sm" src="~/assets/GitHub-Mark.png" />
-          <span class="text-gray-500 dark:text-gray-400">iljorlov</span>
+          <span
+            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-500 hover:text-gray-600 transition-colors"
+            >iljorlov</span
+          >
           <!-- © 2022 -->
           <!-- <a href="https://flowbite.com" class="hover:underline">Flowbite™</a>. -->
           <!-- All Rights Reserved. -->

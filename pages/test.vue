@@ -1,23 +1,20 @@
 <template>
-  <div><button @click="handleClick">click</button></div>
+  <div><button @click="toggleGreet">click</button></div>
 </template>
 
 <script>
-import mergeTwoGrids from '~/utils/mergeTwoGrids'
 export default {
+  data() {
+    return {
+      grid: [],
+    }
+  },
   methods: {
-    handleClick() {
-      const myGrid = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 1, 1, 0],
-        [0, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ]
-      mergeTwoGrids(myGrid, 16, 5)
+    toggleGreet() {
+      import('../src/pkg/gol_wasm').then(({ Game }) => {
+        const game = new Game()
+        console.log(game.get_board())
+      })
     },
   },
 }

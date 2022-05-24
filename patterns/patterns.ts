@@ -234,10 +234,10 @@ export const patternList: PatternType[] = [
     pattern: achimsp11,
     details: {
       name: 'achimsp11',
-      period: 0,
-      year: '',
+      period: 11,
+      year: '1994',
       description: '',
-      author: '',
+      author: 'Achim Flammenkamp',
     },
   },
   {

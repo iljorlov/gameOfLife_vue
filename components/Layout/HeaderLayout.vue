@@ -1,7 +1,7 @@
 <template>
   <header class="shrink-0">
     <nav
-      class="px-2 bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+      class="px-2 bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
     >
       <div
         class="container min-h-[58px] flex flex-wrap max-w-[1280px] items-center justify-between mx-auto"

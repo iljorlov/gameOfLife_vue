@@ -13,6 +13,12 @@
             showMobileMenu ? '' : 'rounded-t-lg delay-200'
           }  xl:rounded-lg xl:mb-2 shadow-lg pointer-events-auto`"
         >
+          <button
+            class="bg-gray-800 transition-colors hover:bg-gray-900 text-lg font-bold border-2 border-b-transparent border-gray-600 text-white rounded-t-lg h-8 w-12 absolute -top-[34px] left-1 flex items-center justify-center"
+            @click="scrollUp"
+          >
+            ↑
+          </button>
           <div
             :style="{
               transform: `translateY(-${
@@ -22,7 +28,7 @@
             class="h-96 lg:hidden lg:pointer-events-none transition-all duration-500 w-full max-w-[384px] top-0 right-0 -z-50 absolute"
           >
             <div
-              class="relative w-full h-full bg-gray-800 ring-2 ring-transparent dark:ring-gray-600 rounded-t-lg"
+              class="relative w-full h-full bg-gray-800 border-2 border-transparent dark:border-gray-600 rounded-tl-lg"
             >
               <div
                 :class="` h-full transition-opacity w-full p-6 text-white ${
@@ -33,7 +39,7 @@
                 <div class="px-5 w-full"><CellSizeControls /></div>
               </div>
               <button
-                class="bg-gray-800 ring-2 ring-transparent dark:ring-gray-600 text-white rounded-t-lg h-8 w-12 absolute -top-[34px] right-1 flex items-center justify-center"
+                class="bg-gray-800 border-2 border-transparent border-b-transparent dark:border-b-transparent dark:border-gray-600 text-white rounded-t-lg h-8 w-12 absolute -top-[32px] -right-[2px] flex items-center justify-center"
                 @click="toggleMobileMenu"
               >
                 <CogIcon
@@ -90,6 +96,9 @@ export default Vue.extend({
     },
     toggleMobileMenu() {
       this.showMobileMenu = !this.showMobileMenu
+    },
+    scrollUp() {
+      window.scroll({ top: 0, behavior: 'smooth' })
     },
   },
 })

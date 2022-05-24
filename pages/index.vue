@@ -1,6 +1,7 @@
 <template>
   <div class="w-full">
     <div class="px-2 2xl:px-0 mx-auto"><MainCanvasWrapper /></div>
+    <H2Header :title="`Templates`" />
     <TemplatesGrid /> <ControlsContainer />
   </div>
 </template>
@@ -10,11 +11,13 @@ import Vue from 'vue'
 import MainCanvasWrapper from '~/components/GOL/MainCanvas/MainCanvasWrapper.vue'
 import TemplatesGrid from '~/components/GOL/TemplatesGrid/TemplatesGrid.vue'
 import ControlsContainer from '~/components/GOL/GameControls/ControlsWrapper.vue'
+import H2Header from '~/components/UI/H2Header.vue'
 import { NotificationType } from '~/store/notifications'
 
 export default Vue.extend({
   name: 'IndexPage',
   components: {
+    H2Header,
     TemplatesGrid,
     ControlsContainer,
     MainCanvasWrapper,
