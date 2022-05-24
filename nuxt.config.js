@@ -56,6 +56,10 @@ export default {
     syncWebAssembly: true
   },
   target: "static",
+  ssr: false,
+  generate: {
+    fallback: true
+  },
 
   env: {
     enableTest:
