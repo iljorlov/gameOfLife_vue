@@ -77,7 +77,7 @@
       </button>
       <button
         v-else
-        class="text-white transition-colors bg-sky-600 mt-3 ml-auto w-fit font-medium px-4 py-2 text-sm rounded-full"
+        class="text-white transition-colors bg-sky-600 ml-auto w-fit font-medium px-4 py-2 text-sm rounded-full"
         @click="handleSelectButton"
       >
         Selected
