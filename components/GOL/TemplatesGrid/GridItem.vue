@@ -22,7 +22,7 @@
         </h3>
       </div>
     </div>
-    <div v-if="!gridCompact">
+    <div class="mt-3" v-if="!gridCompact">
       <div
         v-if="hasAnyInfo"
         class="w-full space-y-2 text-sm px-6 mt-4 text-gray-100 rounded-lg"

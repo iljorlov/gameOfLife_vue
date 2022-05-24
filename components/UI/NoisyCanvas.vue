@@ -5,7 +5,7 @@
   >
     <canvas
       :id="`noisy-canvas-${identifier}`"
-      class="border filter blur-sm"
+      class="border"
       :height="height"
       :width="width"
     ></canvas>
@@ -47,7 +47,7 @@ export default Vue.extend({
   },
   computed: {
     cellSize(): number {
-      return this.width / 6
+      return this.width / 50
     },
   },
   watch: {
