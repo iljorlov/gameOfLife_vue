@@ -1,4 +1,3 @@
-const path = require("path")
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -51,11 +50,11 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
-  buildDir: "dist",
   experiments: {
     asyncWebAssembly: true,
     syncWebAssembly: true
   },
+  target: "static",
 
   env: {
     enableTest:
