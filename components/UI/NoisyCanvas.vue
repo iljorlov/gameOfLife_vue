@@ -1,11 +1,11 @@
 <template>
   <div
     :id="`noisy-canvas-${identifier}-wrapper`"
-    class="h-full w-full bg-blue-100/40"
+    class="h-full w-full bg-blue-100/40 overflow-hidden"
   >
     <canvas
       :id="`noisy-canvas-${identifier}`"
-      class="border"
+      class="border filter blur-sm"
       :height="height"
       :width="width"
     ></canvas>
@@ -21,7 +21,18 @@ import generateRandomGrid from '~/utils/generateRandomGrid'
 import sleep from '~/utils/sleep'
 const noise = random.noise
 noise.setSeed(Math.random() * 1000)
-
+const normalizeAlpha = (a: number) => {
+  if (a < 0.25) {
+    return 0.0
+  }
+  if (a < 0.5) {
+    return 0.15
+  }
+  if (a < 0.75) {
+    return 0.5
+  }
+  return 0.75
+}
 export default Vue.extend({
   // components: { CanvasComponent },
   data() {
@@ -30,16 +41,14 @@ export default Vue.extend({
       ctx: null as CanvasRenderingContext2D | null,
       height: 0,
       width: 0,
-      cellSize: 6,
       currentTick: 0,
       isRunning: false,
-      randomToggle: false,
-      template: [
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0],
-      ],
     }
+  },
+  computed: {
+    cellSize(): number {
+      return this.width / 6
+    },
   },
   watch: {
     width: {
@@ -82,28 +91,30 @@ export default Vue.extend({
   },
 
   methods: {
-    async drawNext() {
+    drawNext() {
       if (this.ctx) {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
 
         const numCols = Math.floor(this.width / this.cellSize)
         const numRows = Math.floor(this.height / this.cellSize)
-        const grid = generateRandomGrid(numCols, numRows)
+        // const grid = generateRandomGrid(numCols, numRows)
+        // const date = Number(new Date())
 
-        const speedDamping = 5
-        for (let row = 0; row < grid.length; row++) {
-          for (let col = 0; col < grid[0].length; col++) {
+        const speedDamping = 450
+        for (let row = 0; row < numRows; row++) {
+          for (let col = 0; col < numCols; col++) {
             const xOffset = row * this.cellSize
             const yOffset = col * this.cellSize
             const a = noise.perlin(
-              (xOffset / this.width) * 25 + this.currentTick / speedDamping,
-              (yOffset / this.height) * 25 + this.currentTick / speedDamping
+              (xOffset / this.width) * 10 - this.currentTick / speedDamping,
+              (yOffset / this.height) * 10 - this.currentTick / speedDamping
             )
-            // console.log(a)
-            // if (grid[row][col] === 1) {
-            this.ctx.fillStyle = `rgba(0,0,0,${a > 0.35 ? 0 : 1})`
-            this.ctx.fillRect(xOffset, yOffset, this.cellSize, this.cellSize)
+            // const a = grid[row][col]
+            // if (Math.random() > 0.5) {
+            //   this.ctx.fillRect(xOffset, yOffset, this.cellSize, this.cellSize)
             // }
+            this.ctx.fillStyle = `rgba(0,0,0,${a})`
+            this.ctx.fillRect(xOffset, yOffset, this.cellSize, this.cellSize)
           }
         }
       }

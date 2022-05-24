@@ -1,11 +1,11 @@
 <template>
   <div @mousemove="(e) => handleMousemove(e)" @mouseleave="handleMouseLeave">
     <CanvasComponent
-      :canvas-width="200"
-      :canvas-height="200"
+      :canvas-width="width"
+      :canvas-height="height"
       :canvas-identifier="canvasIdentifier"
       :template="template"
-      :cell-size="5"
+      :cell-size="cellSize"
       :is-running="isRunning"
       :border-enabled="false"
       :reset-toggle="resetToggle"
@@ -15,6 +15,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import CanvasComponent from '~/components/GOL/CanvasComponent.vue'
 
 export default Vue.extend({
@@ -29,6 +30,25 @@ export default Vue.extend({
     template: {
       type: Array as () => number[][],
       required: true,
+    },
+  },
+  computed: {
+    ...mapState({
+      gridCompact: (state) => state.gridCompact,
+    }),
+    width(): number {
+      return this.gridCompact ? 140 : 200
+    },
+    height(): number {
+      return this.gridCompact ? 140 : 200
+    },
+    cellSize(): number {
+      const largestSide =
+        this.template.length > this.template[0].length
+          ? this.template.length
+          : this.template[0].length
+      const padding = 16
+      return this.width / (largestSide + padding)
     },
   },
   data() {

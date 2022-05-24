@@ -77,9 +77,11 @@
 <script>
 import Vue from 'vue'
 import ThemeToggle from '~/components/Layout/ThemeToggle.vue'
+import NoisyCanvas from '~/components/UI/NoisyCanvas.vue'
 export default Vue.extend({
   components: {
     ThemeToggle,
+    NoisyCanvas,
   },
   data() {
     return {

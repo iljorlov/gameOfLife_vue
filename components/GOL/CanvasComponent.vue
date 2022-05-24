@@ -262,7 +262,6 @@ export default Vue.extend({
           e instanceof TouchEvent &&
           !this.mobileDrawModeOn
         ) {
-          e.preventDefault()
           return
         }
         if (this.mobileDrawModeOn) {
@@ -381,7 +380,10 @@ export default Vue.extend({
         )
         this.ctx.stroke()
 
-        this.ctx.moveTo(0 + straddle, 0 + this.numRows * this.cellSize)
+        this.ctx.moveTo(
+          0 + straddle,
+          0 + this.numRows * this.cellSize + straddle
+        )
         this.ctx.lineTo(
           this.numCols * this.cellSize + straddle,
           this.numRows * this.cellSize + straddle

@@ -1,14 +1,13 @@
 <template>
-  <div class="w-full overflow-hidden">
+  <div class="w-full">
     <div class="px-2 2xl:px-0 mx-auto relative">
       <div
-        class="absolute w-full h-full opacity-0 text-2xl font-bold dark:text-slate-100 flex items-center justify-center zoomOut"
+        class="absolute pointer-events-none w-full h-full opacity-0 text-2xl font-bold dark:text-slate-100 flex items-center justify-center zoomOut"
       >
         Game of Life
       </div>
       <MainCanvasWrapper class="slideFromRightOnInit" />
     </div>
-    <H2Header :title="`Templates`" />
     <TemplatesGrid /> <ControlsContainer />
   </div>
 </template>
@@ -18,21 +17,19 @@ import Vue from 'vue'
 import MainCanvasWrapper from '~/components/GOL/MainCanvas/MainCanvasWrapper.vue'
 import TemplatesGrid from '~/components/GOL/TemplatesGrid/TemplatesGrid.vue'
 import ControlsContainer from '~/components/GOL/GameControls/ControlsWrapper.vue'
-import H2Header from '~/components/UI/H2Header.vue'
 import { NotificationType } from '~/store/notifications'
 import sleep from '~/utils/sleep'
 
 export default Vue.extend({
   name: 'IndexPage',
   components: {
-    H2Header,
     TemplatesGrid,
     ControlsContainer,
     MainCanvasWrapper,
   },
   head() {
     return {
-      title: 'Game Of Life',
+      title: '🤖 | Game Of Life',
     }
   },
   methods: {
@@ -58,13 +55,16 @@ export default Vue.extend({
   animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
   @keyframes slideFromTop {
     0% {
-      transform: translateY(-200vh);
+      transform: translateY(-46px);
+      opacity: 0;
     }
     75% {
-      transform: translateY(-200vh);
+      transform: translateY(-46px);
+      opacity: 0;
     }
     100% {
       transform: translateY(0);
+      opacity: 1;
     }
   }
 }
