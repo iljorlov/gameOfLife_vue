@@ -262,6 +262,7 @@ export default Vue.extend({
           e instanceof TouchEvent &&
           !this.mobileDrawModeOn
         ) {
+          e.preventDefault()
           return
         }
         if (this.mobileDrawModeOn) {
@@ -330,9 +331,7 @@ export default Vue.extend({
         }
       }
     },
-    // handleTouchStart(e: TouchEvent) {
-    //   console.log(e.touches[0].clientX)
-    // },
+
     drawGrid() {
       if (this.ctx) {
         const lineWidth = 0.5

@@ -14,10 +14,10 @@
           }  xl:rounded-lg xl:mb-2 shadow-lg pointer-events-auto`"
         >
           <button
-            class="bg-gray-800 transition-colors hover:bg-gray-900 text-lg font-bold border-2 border-b-transparent border-gray-600 text-white rounded-t-lg h-8 w-12 absolute -top-[34px] left-1 flex items-center justify-center"
+            class="bg-gray-800 transition-colors hover:bg-gray-900 text-sm border-2 border-b-transparent border-gray-600 text-white rounded-t-lg h-8 w-12 absolute -top-[34px] left-1 flex items-center justify-center"
             @click="scrollUp"
           >
-            ↑
+            Up
           </button>
           <div
             :style="{
