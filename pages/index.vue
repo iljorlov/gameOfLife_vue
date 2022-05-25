@@ -1,7 +1,6 @@
 <template>
   <div class="w-full">
     <div class="mx-auto relative">
-      <button @click="addNote">add</button>
       <div
         class="absolute pointer-events-none w-full h-full opacity-0 text-2xl font-bold dark:text-slate-100 flex items-center justify-center zoomOut"
       >
@@ -19,12 +18,11 @@ import { mapActions } from 'vuex'
 import {
   actionType as NoteActionType,
   namespace as NoteNamespace,
+  NotificationType,
 } from '~/store/notifications'
 import MainCanvasWrapper from '~/components/GOL/MainCanvas/MainCanvasWrapper.vue'
 import TemplatesGrid from '~/components/GOL/TemplatesGrid/TemplatesGrid.vue'
 import ControlsContainer from '~/components/GOL/GameControls/ControlsWrapper.vue'
-import { NotificationType } from '~/store/notifications'
-import sleep from '~/utils/sleep'
 
 export default Vue.extend({
   name: 'IndexPage',

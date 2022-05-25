@@ -14,24 +14,24 @@
       </div>
       <div class="mt-4 px-2 h-auto w-full">
         <h3
-          class="w-full break-words text-center text-base text-gray-900 dark:text-gray-50"
+          class="w-full break-words text-center text-sm text-gray-900 dark:text-gray-50"
         >
           {{ patternName }}
         </h3>
       </div>
     </div>
 
-    <div :class="`flex mt-3 items-center justify-end w-full`">
+    <div :class="`flex mt-5 items-center justify-end w-full`">
       <button
         v-if="!isSelected"
-        class="bg-gray-300 text-gray-900 dark:text-white transition-colors dark:bg-gray-700 dark:hover:text-gray-900 hover:bg-yellow-500 dark:hover:bg-orange-400 w-fit font-medium px-4 py-2 text-sm rounded-full"
+        class="bg-gray-300 text-gray-900 dark:text-white transition-colors dark:bg-gray-700 dark:hover:text-gray-900 hover:bg-yellow-500 dark:hover:bg-orange-400 w-fit font-medium px-[10px] py-[6px] text-sm rounded-full"
         @click="handleSelectButton"
       >
         Show me
       </button>
       <button
         v-else
-        class="text-white transition-colors bg-sky-600 ml-auto w-fit font-medium px-4 py-2 text-sm rounded-full"
+        class="text-white transition-colors bg-sky-600 ml-auto w-fit font-medium px-[10px] py-[6px] text-sm rounded-full"
         @click="handleSelectButton"
       >
         Selected
