@@ -1,4 +1,4 @@
-import { MutationTree } from 'vuex'
+import { MutationTree, ActionTree } from 'vuex'
 import {
   CanvasStateType,
   namespace as CanvasStateNamespace,
@@ -18,17 +18,38 @@ export type RootState = ReturnType<typeof state> & {
   [NotificationsNamespace]: NotificationsStateType
 }
 
+export const MutationType = {
+  SET_DARK_MODE: 'setDarkMode',
+  SET_GRID_COMPACT: 'setGridCompact',
+}
+
 export const mutations: MutationTree<RootState> = {
-  setDarkModeOn(state) {
-    state.darkMode = true
+  [MutationType.SET_DARK_MODE]: (state, newMode: boolean) => {
+    state.darkMode = newMode
   },
-  setDarkModeOff(state) {
-    state.darkMode = false
+  [MutationType.SET_GRID_COMPACT]: (state, newMode: boolean) => {
+    state.gridCompact = newMode
   },
-  setGridCompactOn(state) {
-    state.gridCompact = true
+}
+
+export const actionType = {
+  SET_DARK_MODE_ON: 'setDarkModeOn',
+  SET_DARK_MODE_OFF: 'setDarkModeOff',
+  SET_GRID_COMPACT_ON: 'setGridCompactOn',
+  SET_GRID_COMPACT_OFF: 'setGridCompactOff',
+}
+
+export const actions: ActionTree<RootState, RootState> = {
+  [actionType.SET_DARK_MODE_OFF]({ commit }) {
+    commit(MutationType.SET_DARK_MODE, false)
   },
-  setGridCompactOff(state) {
-    state.gridCompact = false
+  [actionType.SET_DARK_MODE_ON]({ commit }) {
+    commit(MutationType.SET_DARK_MODE, true)
+  },
+  [actionType.SET_GRID_COMPACT_OFF]({ commit }) {
+    commit(MutationType.SET_GRID_COMPACT, false)
+  },
+  [actionType.SET_GRID_COMPACT_ON]({ commit }) {
+    commit(MutationType.SET_GRID_COMPACT, true)
   },
 }

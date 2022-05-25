@@ -1,6 +1,7 @@
 <template>
   <div class="w-full">
     <div class="mx-auto relative">
+      <button @click="addNote">add</button>
       <div
         class="absolute pointer-events-none w-full h-full opacity-0 text-2xl font-bold dark:text-slate-100 flex items-center justify-center zoomOut"
       >
@@ -14,6 +15,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapActions } from 'vuex'
+import {
+  actionType as NoteActionType,
+  namespace as NoteNamespace,
+} from '~/store/notifications'
 import MainCanvasWrapper from '~/components/GOL/MainCanvas/MainCanvasWrapper.vue'
 import TemplatesGrid from '~/components/GOL/TemplatesGrid/TemplatesGrid.vue'
 import ControlsContainer from '~/components/GOL/GameControls/ControlsWrapper.vue'
@@ -29,11 +35,14 @@ export default Vue.extend({
   },
   head() {
     return {
-      title: '🤖 | Game Of Life',
+      title: '🤖 GOL',
     }
   },
   methods: {
-    addNotification() {
+    ...mapActions(NoteNamespace, {
+      addNotification: NoteActionType.ADD_NOTIFICATION,
+    }),
+    addNote() {
       const notification: NotificationType = {
         lifeDurationSeconds: 1000,
         text: Math.random() > 0.6 ? '' : 'hello there',
@@ -41,7 +50,7 @@ export default Vue.extend({
         type: Math.random() > 0.6 ? 'INFO' : 'ERROR',
         uuid: '',
       }
-      this.$store.commit('notifications/addNotification', notification)
+      this.addNotification(notification)
     },
   },
 })

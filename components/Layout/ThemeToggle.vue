@@ -24,11 +24,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import MoonIcon from '~/components/UI/Icons/MoonIcon.vue'
 import SunIcon from '~/components/UI/Icons/SunIcon.vue'
 import CustomToggle from '~/components/UI/CustomToggle.vue'
-import { RootState } from '~/store'
+import { RootState, actionType } from '~/store'
 
 export default Vue.extend({
   components: {
@@ -61,7 +61,7 @@ export default Vue.extend({
         (typeof theme === 'string' && theme === 'dark') ||
         window.matchMedia('(prefers-color-scheme: dark)').matches
       ) {
-        this.$store.commit('setDarkModeOn')
+        this.setDarkmodeOn()
 
         document.documentElement.classList.add('dark')
       } else if (typeof theme === 'string' && theme === 'light') {
@@ -74,13 +74,17 @@ export default Vue.extend({
   methods: {
     toggleTheme(e: boolean) {
       if (e) {
-        this.$store.commit('setDarkModeOn')
+        this.setDarkmodeOn()
         localStorage.setItem('theme', 'dark')
       } else {
-        this.$store.commit('setDarkModeOff')
+        this.setDarkmodeOff()
         localStorage.setItem('theme', 'light')
       }
     },
+    ...mapActions({
+      setDarkmodeOn: actionType.SET_DARK_MODE_ON,
+      setDarkmodeOff: actionType.SET_DARK_MODE_OFF,
+    }),
   },
 })
 </script>

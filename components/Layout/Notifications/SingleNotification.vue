@@ -27,7 +27,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { NotificationType } from '~/store/notifications'
+import { mapActions } from 'vuex'
+
+import { NotificationType, namespace, actionType } from '~/store/notifications'
 import XIcon from '~/components/UI/Icons/XIcon.vue'
 export default Vue.extend({
   components: {
@@ -45,9 +47,12 @@ export default Vue.extend({
     }, this.notification.lifeDurationSeconds * 1000)
   },
   methods: {
-    removeNotification(uuid: string) {
-      this.$store.commit('notifications/removeNotification', uuid)
+    remove(uuid: string) {
+      this.removeNotification(uuid)
     },
+    ...mapActions(namespace, {
+      removeNotification: actionType.REMOVE_NOTIFICATION,
+    }),
   },
 })
 </script>

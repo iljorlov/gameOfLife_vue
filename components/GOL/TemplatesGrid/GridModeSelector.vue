@@ -26,8 +26,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState } from 'vuex'
-import { RootState } from '~/store/index'
+import { mapState, mapActions } from 'vuex'
+import { RootState, actionType } from '~/store'
 import GridIcon from '~/components/UI/Icons/GridIcon.vue'
 export default Vue.extend({
   components: {
@@ -40,11 +40,20 @@ export default Vue.extend({
   },
 
   methods: {
+    ...mapActions({
+      setGridLarge: actionType.SET_GRID_COMPACT_OFF,
+      setGridSmall: actionType.SET_GRID_COMPACT_ON,
+    }),
+    // setGridLarge() {
+    //   return this.$store.state.actions
+    // },
     toggleGridMode() {
+      // console.log(this.setGridLarge())
+
       if (this.gridCompact) {
-        this.$store.commit('setGridCompactOff')
+        this.setGridLarge()
       } else {
-        this.$store.commit('setGridCompactOn')
+        this.setGridSmall()
       }
     },
   },

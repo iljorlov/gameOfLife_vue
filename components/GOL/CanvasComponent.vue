@@ -30,14 +30,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState } from 'vuex'
-import { RootState } from '~/store'
+import { mapState, mapActions } from 'vuex'
+import { actionType, RootState } from '~/store'
+import { actionType as notificationsActionType } from '~/store/notifications'
 import generateRandomGrid from '~/utils/generateRandomGrid'
 import sleep from '~/utils/sleep'
 import countNeighborsSeamless from '~/utils/countNeighborsSeamless'
 import countNeighborsBorder from '~/utils/countNeighborsBorder'
 import mergeTwoGrids from '~/utils/mergeTwoGrids'
-import { NotificationType } from '~/store/notifications'
+import {
+  NotificationType,
+  namespace as NotificationsNamespace,
+} from '~/store/notifications'
 
 export default Vue.extend({
   props: {
@@ -322,7 +326,7 @@ export default Vue.extend({
             type: 'ERROR',
             uuid: '',
           }
-          this.$store.commit('notifications/addNotification', notification)
+          this.addNotification(notification)
         }
       }
     },
@@ -522,7 +526,7 @@ export default Vue.extend({
       }
       this.$store.commit('canvasState/pauseCanvas')
 
-      this.$store.commit('notifications/addNotification', notification)
+      this.addNotification(notification)
     },
 
     getColor(item: 'DEAD_CELL' | 'ALIVE_CELL' | 'GRID' | 'BORDER'): string {
@@ -537,6 +541,9 @@ export default Vue.extend({
           return this.darkMode ? '#fefefe' : '#1F2937'
       }
     },
+    ...mapActions(NotificationsNamespace, {
+      addNotification: notificationsActionType.ADD_NOTIFICATION,
+    }),
   },
 })
 </script>
