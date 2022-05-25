@@ -61,8 +61,9 @@ export default {
     fallback: true
   },
 
+
   env: {
-    enableTest:
+    development:
       process.env.NODE_ENV === "dev"
         ? "true"
         : "false"

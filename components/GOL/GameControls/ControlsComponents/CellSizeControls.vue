@@ -10,6 +10,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapState } from 'vuex'
+import { RootState } from '~/store'
 import CustomSlider from '~/components/UI/CustomSlider.vue'
 
 export default Vue.extend({
@@ -17,9 +19,9 @@ export default Vue.extend({
     CustomSlider,
   },
   computed: {
-    cellSize(): number {
-      return this.$store.state.canvasState.cellSize
-    },
+    ...mapState({
+      cellSize: (state) => (state as RootState).canvasState.cellSize,
+    }),
   },
   methods: {
     handleCellSizeChange(e: number) {

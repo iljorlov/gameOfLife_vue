@@ -1,5 +1,5 @@
 <template>
-  <div id="main-canvas-wrapper" :class="`mt-3 md:mt-6 w-full `">
+  <div id="main-canvas-wrapper" :class="`mt-3 md:mt-6 w-full`">
     <CanvasComponent
       :canvas-width="canvasWidth"
       :canvas-height="canvasHeigth"
@@ -19,7 +19,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import CanvasComponent from '~/components/GOL/CanvasComponent.vue'
+import { RootState } from '~/store'
 export default Vue.extend({
   components: {
     CanvasComponent,
@@ -39,36 +41,20 @@ export default Vue.extend({
         return this.canvasWidth / phoneRatio
       }
     },
-    cellSize(): number {
-      return this.$store.state.canvasState.cellSize
-    },
-    selectedPattern(): number[][] {
-      return this.$store.state.canvasState.selectedPattern.pattern
-    },
-    showGrid(): boolean {
-      return this.$store.state.canvasState.showGrid
-    },
-    borderEnabled(): boolean {
-      return this.$store.state.canvasState.border
-    },
-    speed(): number {
-      return this.$store.state.canvasState.speed
-    },
-    selectedPatternName(): string {
-      return this.$store.state.canvasState.selectedPattern.details.name
-    },
-    isRunning(): boolean {
-      return this.$store.state.canvasState.isRunning
-    },
-    clearToggle(): boolean {
-      return this.$store.state.canvasState.clearToggle
-    },
-    resetToggle(): boolean {
-      return this.$store.state.canvasState.resetToggle
-    },
-    randomToggle(): boolean {
-      return this.$store.state.canvasState.randomToggle
-    },
+    ...mapState({
+      cellSize: (state) => (state as RootState).canvasState.cellSize,
+      selectedPattern: (state) =>
+        (state as RootState).canvasState.selectedPattern.pattern,
+      showGrid: (state) => (state as RootState).canvasState.showGrid,
+      borderEnabled: (state) => (state as RootState).canvasState.border,
+      speed: (state) => (state as RootState).canvasState.speed,
+      selectedPatternName: (state) =>
+        (state as RootState).canvasState.selectedPattern.details.name,
+      isRunning: (state) => (state as RootState).canvasState.isRunning,
+      clearToggle: (state) => (state as RootState).canvasState.clearToggle,
+      resetToggle: (state) => (state as RootState).canvasState.resetToggle,
+      randomToggle: (state) => (state as RootState).canvasState.randomToggle,
+    }),
   },
   mounted() {
     window.addEventListener('resize', this.handleResize)

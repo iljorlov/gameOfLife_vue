@@ -30,7 +30,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-// import generateEmptyGrid from '~/utils/generateEmptyGrid'
+import { mapState } from 'vuex'
+import { RootState } from '~/store'
 import generateRandomGrid from '~/utils/generateRandomGrid'
 import sleep from '~/utils/sleep'
 import countNeighborsSeamless from '~/utils/countNeighborsSeamless'
@@ -101,21 +102,16 @@ export default Vue.extend({
     }
   },
   computed: {
-    darkMode(): boolean {
-      return this.$store.state.darkMode
-    },
-    mobileDrawModeOn(): boolean {
-      return this.$store.state.canvasState.mobileDrawModeOn
-    },
-    selectedPattern(): number[][] {
-      return this.$store.state.canvasState.selectedPattern.pattern
-    },
-    speed(): number {
-      return this.$store.state.canvasState.speed
-    },
-    selectedPatternName(): string {
-      return this.$store.state.canvasState.selectedPattern.details.name
-    },
+    ...mapState({
+      darkMode: (state) => (state as RootState).darkMode,
+      mobileDrawModeOn: (state) =>
+        (state as RootState).canvasState.mobileDrawModeOn,
+      selectedPattern: (state) =>
+        (state as RootState).canvasState.selectedPattern.pattern,
+      speed: (state) => (state as RootState).canvasState.speed,
+      selectedPatternName: (state) =>
+        (state as RootState).canvasState.selectedPattern.details.name,
+    }),
     numRows(): number {
       return Math.floor(this.canvasHeight / this.cellSize)
     },

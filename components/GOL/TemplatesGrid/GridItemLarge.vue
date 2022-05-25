@@ -30,10 +30,10 @@
           :key="`${pattern.details.name}-${entry.fieldName}`"
           class="w-full flex justify-between"
         >
-          <div class="text-gray-700 dark:text-gray-400">
+          <div class="text-gray-700 w-1/4 text-left dark:text-gray-400">
             {{ entry.fieldName }}
           </div>
-          <div class="text-gray-900 dark:text-gray-50">
+          <div class="text-gray-900 text-right w-3/4 dark:text-gray-50">
             {{ entry.fieldValue || 'unknown' }}
           </div>
         </div>
@@ -84,10 +84,14 @@ export default Vue.extend({
     },
   },
   computed: {
+    ...mapState({
+      currentTemplateName: (state) =>
+        (state as RootState).canvasState.selectedPattern.details.name,
+    }),
+
     patternInfoFormatted(): { fieldName: string; fieldValue: string }[] {
       const data: { fieldName: string; fieldValue: string }[] = []
       const details = this.pattern.details
-
       if (details.author) {
         data.push({ fieldName: 'Author', fieldValue: details.author })
       }
@@ -107,13 +111,6 @@ export default Vue.extend({
     },
     patternName(): string {
       return this.pattern.details.name
-      // return this.pattern.details.name.length > 18
-      //   ? this.pattern.details.name.slice(0, 17) + '...'
-      //   : this.pattern.details.name
-    },
-
-    currentTemplateName(): string {
-      return this.$store.state.canvasState.selectedPattern.details.name
     },
     isSelected(): boolean {
       return this.currentTemplateName === this.pattern.details.name

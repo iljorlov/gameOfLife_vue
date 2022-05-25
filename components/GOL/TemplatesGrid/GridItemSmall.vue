@@ -46,6 +46,7 @@ import { mapState } from 'vuex'
 import GridCanvasWrapper from '~/components/GOL/TemplatesGrid/GridCanvasWrapper.vue'
 import { PatternType } from '~/patterns/patterns'
 import { RootState } from '~/store'
+
 export default Vue.extend({
   components: { GridCanvasWrapper },
   props: {
@@ -59,11 +60,12 @@ export default Vue.extend({
     },
   },
   computed: {
+    ...mapState({
+      currentTemplateName: (state) =>
+        (state as RootState).canvasState.selectedPattern.details.name,
+    }),
     patternName(): string {
       return this.pattern.details.name
-    },
-    currentTemplateName(): string {
-      return this.$store.state.canvasState.selectedPattern.details.name
     },
     isSelected(): boolean {
       return this.currentTemplateName === this.pattern.details.name

@@ -1,6 +1,8 @@
 import { MutationTree } from 'vuex'
 import { patternList, PatternType } from '../patterns/patterns'
 
+export const namespace = 'canvasState'
+
 export const state = () => ({
   isRunning: true,
   mobileDrawModeOn: false,

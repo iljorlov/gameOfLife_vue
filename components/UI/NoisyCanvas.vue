@@ -70,27 +70,26 @@ export default Vue.extend({
     const ctx = canvas?.getContext('2d')
     this.ctx = ctx
 
-    window.addEventListener('resize', () => {
-      const wrapper = document.getElementById(
-        `noisy-canvas-${this.identifier}-wrapper`
-      )
-      this.width = wrapper!.getBoundingClientRect().width
-    })
+    window.addEventListener('resize', this.widthHandler)
 
     if (ctx) {
       this.drawNext()
     }
   },
   destroyed() {
-    window.removeEventListener('resize', () => {
-      const wrapper = document.getElementById(
-        `noisy-canvas-${this.identifier}-wrapper`
-      )
-      this.width = wrapper!.getBoundingClientRect().width
-    })
+    window.removeEventListener('resize', this.widthHandler)
   },
 
   methods: {
+    widthHandler() {
+      const wrapper = document.getElementById(
+        `noisy-canvas-${this.identifier}-wrapper`
+      )
+      if (wrapper) {
+        this.width = wrapper.getBoundingClientRect().width
+      }
+    },
+
     drawNext() {
       if (this.ctx) {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)

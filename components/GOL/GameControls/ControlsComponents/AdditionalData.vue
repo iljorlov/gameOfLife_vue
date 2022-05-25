@@ -28,15 +28,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import CustomCheckbox from '~/components/UI/CustomCheckbox.vue'
+import { RootState } from '~/store'
 export default Vue.extend({
   components: {
     CustomCheckbox,
   },
   computed: {
-    canvasState(): number {
-      return this.$store.state.canvasState
-    },
+    ...mapState({
+      canvasState: (state) => (state as RootState).canvasState,
+    }),
   },
   methods: {
     handleBorder(e: boolean) {

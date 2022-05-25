@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="px-2 2xl:px-0 mx-auto relative">
+    <div class="mx-auto relative">
       <div
         class="absolute pointer-events-none w-full h-full opacity-0 text-2xl font-bold dark:text-slate-100 flex items-center justify-center zoomOut"
       >

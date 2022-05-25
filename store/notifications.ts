@@ -1,6 +1,8 @@
 import { ActionTree, MutationTree } from 'vuex'
 import { v4 as uuidv4 } from 'uuid'
 
+export const namespace = 'notifications'
+
 export type NotificationType = {
   lifeDurationSeconds: number
   title: string
@@ -13,7 +15,7 @@ export const state = () => ({
   notificationsList: [] as NotificationType[],
 })
 
-type NotificationsStateType = ReturnType<typeof state>
+export type NotificationsStateType = ReturnType<typeof state>
 
 export const mutations: MutationTree<NotificationsStateType> = {
   addNotification: (

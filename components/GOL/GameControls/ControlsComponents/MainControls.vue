@@ -43,10 +43,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import PlayIcon from '../../../UI/Icons/PlayIcon.vue'
 import PauseIcon from '~/components/UI/Icons/PauseIcon.vue'
 import CanvasComponent from '~/components/GOL/CanvasComponent.vue'
-import { CanvasStateType } from '~/store/canvasState'
+import { RootState } from '~/store'
 export default Vue.extend({
   components: {
     PlayIcon,
@@ -62,17 +63,19 @@ export default Vue.extend({
   },
 
   computed: {
-    selectedTemplateName(): string {
-      return this.$store.state.canvasState.selectedPattern.details.name
-    },
-    canvasState(): CanvasStateType {
-      return this.$store.state.canvasState
-    },
+    ...mapState({
+      selectedTemplateName: (state) =>
+        (state as RootState).canvasState.selectedPattern.details.name,
+      canvasState: (state) => (state as RootState).canvasState,
+      defaultPatternWidth: (state) =>
+        (state as RootState).canvasState.selectedPattern.pattern[0].length,
+      defaultPatternHeight: (state) =>
+        (state as RootState).canvasState.selectedPattern.pattern.length,
+    }),
+
     cellSize(): number {
-      const width =
-        this.$store.state.canvasState.selectedPattern.pattern[0].length
-      const height =
-        this.$store.state.canvasState.selectedPattern.pattern.length
+      const width = this.defaultPatternWidth
+      const height = this.defaultPatternHeight
       const largestDimension = width > height ? width : height
       const padding = 10
       return (this.canvasSize - padding) / (largestDimension + padding)

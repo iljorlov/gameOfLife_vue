@@ -16,22 +16,12 @@ import CellSizeControls from './ControlsComponents/CellSizeControls.vue'
 import AdditionalData from './ControlsComponents/AdditionalData.vue'
 import MainControls from './ControlsComponents/MainControls.vue'
 
-import { PatternType } from '~/patterns/patterns'
-
 export default Vue.extend({
   components: {
     SpeedControls,
     CellSizeControls,
     AdditionalData,
     MainControls,
-  },
-  computed: {
-    canvasState() {
-      return this.$store.state.canvasState
-    },
-    selectedPattern(): PatternType {
-      return this.$store.state.canvasState.selectedPattern
-    },
   },
 })
 </script>

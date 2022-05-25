@@ -24,9 +24,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import MoonIcon from '~/components/UI/Icons/MoonIcon.vue'
 import SunIcon from '~/components/UI/Icons/SunIcon.vue'
 import CustomToggle from '~/components/UI/CustomToggle.vue'
+import { RootState } from '~/store'
+
 export default Vue.extend({
   components: {
     MoonIcon,
@@ -35,16 +38,13 @@ export default Vue.extend({
   },
 
   computed: {
-    darkMode(): boolean {
-      return this.$store.state.darkMode
-    },
+    ...mapState({
+      darkMode: (state) => (state as RootState).darkMode,
+    }),
   },
   watch: {
     darkMode: {
       handler() {
-        // if (this.lightTheme === null) {
-        //   return
-        // }
         if (this.darkMode) {
           document.documentElement.classList.add('dark')
         } else {
@@ -73,8 +73,6 @@ export default Vue.extend({
   },
   methods: {
     toggleTheme(e: boolean) {
-      console.log(e)
-
       if (e) {
         this.$store.commit('setDarkModeOn')
         localStorage.setItem('theme', 'dark')

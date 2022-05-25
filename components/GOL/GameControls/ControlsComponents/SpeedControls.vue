@@ -10,16 +10,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import CustomSlider from '~/components/UI/CustomSlider.vue'
-
+import { RootState } from '~/store'
 export default Vue.extend({
   components: {
     CustomSlider,
   },
   computed: {
-    speed(): number {
-      return this.$store.state.canvasState.speed
-    },
+    ...mapState({
+      speed: (state) => (state as RootState).canvasState.speed,
+    }),
   },
   methods: {
     handleSpeedChange(e: number) {

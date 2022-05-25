@@ -24,13 +24,14 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import SingleNotification from './SingleNotification.vue'
+import { RootState } from '~/store'
 export default Vue.extend({
   components: {
     SingleNotification,
   },
   computed: {
     ...mapState({
-      notifications: 'notifications',
+      notifications: (state) => (state as RootState).notifications,
     }),
   },
 })

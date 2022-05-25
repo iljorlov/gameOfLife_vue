@@ -2,7 +2,7 @@
   <div>
     <H2Header :title="`Templates`"><GridModeSelector /></H2Header>
 
-    <Transition name="fade" mode="out-in" appear="true">
+    <Transition name="fade" mode="out-in" :appear="true">
       <div
         v-if="gridCompact"
         key="grid-compact"
