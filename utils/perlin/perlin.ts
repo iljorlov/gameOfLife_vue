@@ -32,9 +32,9 @@ export const noise = (x: number, y = 0, z = 0) => {
     z = -z
   }
 
-  let xi = Math.floor(x),
-    yi = Math.floor(y),
-    zi = Math.floor(z)
+  let xi = Math.floor(x)
+  let yi = Math.floor(y)
+  let zi = Math.floor(z)
   let xf = x - xi
   let yf = y - yi
   let zf = z - zi
@@ -136,5 +136,3 @@ export const noiseSeed = (seed: number) => {
     perlin[i] = lcg.rand()
   }
 }
-
-export const a = {}

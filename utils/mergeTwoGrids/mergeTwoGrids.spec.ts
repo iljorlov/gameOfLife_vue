@@ -1,7 +1,7 @@
 import mergeTwoGrids from '.'
 describe('merges two grids', () => {
   it('merges two grid if recipient has less rows', () => {
-    let grid = [
+    const grid = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 1, 1, 0],
@@ -13,13 +13,6 @@ describe('merges two grids', () => {
     ]
     expect(mergeTwoGrids(grid, 16, 5)).toHaveLength(5)
     expect(mergeTwoGrids(grid, 16, 5)[0]).toHaveLength(16)
-    // expect(mergeTwoGrids(grid, 16, 5)).toEqual([
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    //   [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    //   [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    // ])
   })
   it('merges two grids if recipient has more cols or rows than the provided grid', () => {
     let grid = [
@@ -74,21 +67,21 @@ describe('merges two grids', () => {
     ])
 
     // next
-    // grid = [
-    //   [1, 0],
-    //   [0, 1],
-    // ]
+    grid = [
+      [1, 0],
+      [0, 1],
+    ]
 
-    // recipientCols = 5
-    // recipientRows = 5
+    recipientCols = 5
+    recipientRows = 5
 
-    // expect(mergeTwoGrids(grid, recipientCols, recipientRows)).toEqual([
-    //   [0, 0, 0, 0, 0],
-    //   [0, 1, 0, 0, 0],
-    //   [0, 0, 1, 0, 0],
-    //   [0, 0, 0, 0, 0],
-    //   [0, 0, 0, 0, 0],
-    // ])
+    expect(mergeTwoGrids(grid, recipientCols, recipientRows)).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ])
   })
   it("merges two grids if recipients cols and rows are both fewer than the new one's", () => {
     let grid = [

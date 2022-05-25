@@ -476,7 +476,7 @@ export default Vue.extend({
         }
       }
       this.grid = gridCopy
-      if (this.speed !== 100) {
+      if (this.speed < 99) {
         await sleep(100 - this.speed)
       }
       if (this.isMainCanvas) {

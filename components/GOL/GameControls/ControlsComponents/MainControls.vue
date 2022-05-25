@@ -110,13 +110,9 @@ export default Vue.extend({
       this.resetToggle = !this.resetToggle
     },
     resetCanvas() {
-      if (this.canvasState && this.canvasState.isRunning) {
-        this.$store.commit('canvasState/pauseCanvas')
-      } else {
-        window.scroll({ top: 0, behavior: 'smooth' })
-        this.$store.commit('canvasState/toggleReset')
-        this.$store.commit('canvasState/startCanvas')
-      }
+      window.scroll({ top: 0, behavior: 'smooth' })
+      this.$store.commit('canvasState/toggleReset')
+      this.$store.commit('canvasState/startCanvas')
     },
   },
 })

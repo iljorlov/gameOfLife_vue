@@ -1,43 +1,32 @@
 <template>
   <div>
-    <H2Header :title="`Templates`">
+    <H2Header :title="`Templates`"><GridModeSelector /></H2Header>
+
+    <Transition name="fade" mode="out-in" appear="true">
       <div
-        @click="toggleGridMode"
-        class="h-full overflow-clip relative w-24 shrink-0 cursor-pointer bg-gray-200 rounded-lg flex justify-between"
+        v-if="gridCompact"
+        key="grid-compact"
+        :class="`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-y-6 gap-x-4 mt-12 pb-80`"
       >
-        <div :class="`h-10 w-12  flex justify-center items-center`">
-          <div
-            :class="`h-6  w-6 ${
-              gridCompact ? 'bg-gray-300' : 'bg-gray-400'
-            } rounded-md`"
-          />
-        </div>
-        <div
-          :style="{ transform: `translateX(${gridCompact ? '48' : '0'}px) ` }"
-          class="absolute transition-all ease-in-out h-10 w-12 bg-slate-400/30"
+        <GridItemSmall
+          v-for="pattern in patternList"
+          :key="`${pattern.details.name}-grid-item-small`"
+          :pattern="pattern"
         />
-        <div
-          :class="`h-10 w-12 flex  ${
-            gridCompact ? 'text-gray-400' : 'text-gray-300'
-          } justify-center items-center`"
-        >
-          <GridIcon class="h-8 w-8" />
-        </div>
       </div>
-    </H2Header>
-    <div
-      :class="`grid ${
-        gridCompact
-          ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-y-6 gap-x-4'
-          : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8'
-      } mt-12 pb-80`"
-    >
-      <GridItem
-        v-for="pattern in patternList"
-        :key="pattern.details.name"
-        :pattern="pattern"
-      />
-    </div>
+
+      <div
+        v-if="!gridCompact"
+        key="grid-large"
+        :class="`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8 mt-12 pb-80`"
+      >
+        <GridItemLarge
+          v-for="pattern in patternList"
+          :key="`${pattern.details.name}-grid-item-large`"
+          :pattern="pattern"
+        />
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -45,36 +34,46 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { patternList } from '~/patterns/patterns'
-import GridItem from '~/components/GOL/TemplatesGrid/GridItem.vue'
+import GridItemLarge from '~/components/GOL/TemplatesGrid/GridItemLarge.vue'
+import GridItemSmall from '~/components/GOL/TemplatesGrid/GridItemSmall.vue'
+import GridModeSelector from '~/components/GOL/TemplatesGrid/GridModeSelector.vue'
 import H2Header from '~/components/UI/H2Header.vue'
-import GridIcon from '~/components/UI/Icons/GridIcon.vue'
 import { RootState } from '~/store'
 export default Vue.extend({
   components: {
-    GridItem,
+    GridItemLarge,
+    GridItemSmall,
+    GridModeSelector,
     H2Header,
-    GridIcon,
-  },
-  computed: {
-    ...mapState({
-      gridCompact: (state) => (state as RootState).gridCompact,
-    }),
   },
   data() {
     return {
       patternList,
     }
   },
-  methods: {
-    toggleGridMode() {
-      if (this.gridCompact) {
-        this.$store.commit('setGridCompactOff')
-      } else {
-        this.$store.commit('setGridCompactOn')
-      }
-    },
+  computed: {
+    ...mapState({
+      gridCompact: (state) => (state as RootState).gridCompact,
+    }),
   },
+
+  methods: {},
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.fade-enter-active {
+  opacity: 1;
+
+  transition: all 0.2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+.fade-enter {
+  opacity: 0 !important;
+  transform: scale(0.99) translateY(10px) !important;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scale(0.99) translateY(10px);
+}
+</style>

@@ -1,9 +1,10 @@
 <template>
   <div @mousemove="(e) => handleMousemove(e)" @mouseleave="handleMouseLeave">
     <CanvasComponent
+      v-if="id"
       :canvas-width="width"
       :canvas-height="height"
-      :canvas-identifier="canvasIdentifier"
+      :canvas-identifier="`${canvasIdentifier}-${id}`"
       :template="template"
       :cell-size="cellSize"
       :is-running="isRunning"
@@ -16,6 +17,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import { v4 as uuidv4 } from 'uuid'
+
 import CanvasComponent from '~/components/GOL/CanvasComponent.vue'
 import { RootState } from '~/store'
 export default Vue.extend({
@@ -31,6 +34,13 @@ export default Vue.extend({
       type: Array as () => number[][],
       required: true,
     },
+  },
+  data() {
+    return {
+      isRunning: false,
+      resetToggle: false,
+      id: '',
+    }
   },
   computed: {
     ...mapState({
@@ -51,11 +61,8 @@ export default Vue.extend({
       return this.width / (largestSide + padding)
     },
   },
-  data() {
-    return {
-      isRunning: false,
-      resetToggle: false,
-    }
+  mounted() {
+    this.id = uuidv4()
   },
   methods: {
     handleMousemove(e: MouseEvent) {

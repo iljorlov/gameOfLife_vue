@@ -1,8 +1,6 @@
 <template>
   <div
-    :class="`mx-auto h-full flex flex-col justify-between bg-gray-200 dark:bg-gray-700 shadow  ${
-      gridCompact ? 'w-full p-3' : 'w-full p-6'
-    } rounded-lg overflow-hidden`"
+    :class="`mx-auto h-full flex flex-col justify-between bg-gray-200 dark:bg-gray-700 shadow w-full p-6 rounded-lg overflow-hidden`"
   >
     <div class="">
       <div
@@ -10,48 +8,33 @@
         @click="handleTemplateSelect()"
       >
         <GridCanvasWrapper
-          :canvas-identifier="pattern.details.name"
+          :canvas-identifier="`${pattern.details.name}-large`"
           :template="pattern.pattern"
         />
       </div>
       <div class="mt-4 px-2 h-auto w-full">
         <h3
-          class="w-full text-center text-base text-gray-900 dark:text-gray-50"
+          class="w-full text-center text-base break-words text-gray-900 dark:text-gray-50"
         >
           {{ patternName }}
         </h3>
       </div>
     </div>
-    <div class="mt-3" v-if="!gridCompact">
+    <div class="mt-3">
       <div
         v-if="hasAnyInfo"
         class="w-full space-y-2 text-sm px-6 mt-4 text-gray-100 rounded-lg"
       >
-        <div v-if="pattern.details.year" class="w-full flex justify-between">
-          <div class="text-gray-700 dark:text-gray-400">Year of discovery</div>
-          <div class="text-gray-900 dark:text-gray-50">
-            {{ pattern.details.year || 'unknown' }}
-          </div>
-        </div>
-        <div v-if="pattern.details.author" class="w-full flex justify-between">
-          <div class="text-gray-700 dark:text-gray-400">Author</div>
-          <div class="text-gray-900 dark:text-gray-50">
-            {{ pattern.details.author || 'unknown' }}
-          </div>
-        </div>
-        <div v-if="pattern.details.period" class="w-full flex justify-between">
-          <div class="text-gray-700 dark:text-gray-400">Period</div>
-          <div class="text-gray-900 dark:text-gray-50">
-            {{ pattern.details.period || 'unknown' }}
-          </div>
-        </div>
         <div
-          v-if="pattern.details.description"
+          v-for="entry in patternInfoFormatted"
+          :key="`${pattern.details.name}-${entry.fieldName}`"
           class="w-full flex justify-between"
         >
-          <div class="text-gray-700 dark:text-gray-400">Description</div>
+          <div class="text-gray-700 dark:text-gray-400">
+            {{ entry.fieldName }}
+          </div>
           <div class="text-gray-900 dark:text-gray-50">
-            {{ pattern.details.description || 'unknown' }}
+            {{ entry.fieldValue || 'unknown' }}
           </div>
         </div>
       </div>
@@ -63,11 +46,7 @@
       </div>
     </div>
 
-    <div
-      :class="`flex ${
-        gridCompact ? 'mt-3' : 'mt-6'
-      } items-center justify-end w-full`"
-    >
+    <div :class="`flex mt-6 items-center justify-end w-full`">
       <button
         v-if="!isSelected"
         class="bg-gray-300 text-gray-900 dark:text-white transition-colors dark:bg-gray-800 dark:hover:text-gray-900 hover:bg-yellow-500 dark:hover:bg-orange-400 w-fit font-medium px-4 py-2 text-sm rounded-full"
@@ -105,17 +84,35 @@ export default Vue.extend({
     },
   },
   computed: {
-    ...mapState({
-      gridCompact: (state) => (state as RootState).gridCompact,
-    }),
+    patternInfoFormatted(): { fieldName: string; fieldValue: string }[] {
+      const data: { fieldName: string; fieldValue: string }[] = []
+      const details = this.pattern.details
+
+      if (details.author) {
+        data.push({ fieldName: 'Author', fieldValue: details.author })
+      }
+      if (details.year) {
+        data.push({ fieldName: 'Year', fieldValue: details.year })
+      }
+      if (details.period) {
+        data.push({
+          fieldName: 'Period',
+          fieldValue: details.period.toString(),
+        })
+      }
+      if (details.description) {
+        data.push({ fieldName: 'Description', fieldValue: details.description })
+      }
+      return data
+    },
     patternName(): string {
-      return this.pattern.details.name.length > 18
-        ? this.pattern.details.name.slice(0, 17) + '...'
-        : this.pattern.details.name
+      return this.pattern.details.name
+      // return this.pattern.details.name.length > 18
+      //   ? this.pattern.details.name.slice(0, 17) + '...'
+      //   : this.pattern.details.name
     },
 
     currentTemplateName(): string {
-      // return 'this.$store.selectedPattern.details.name'
       return this.$store.state.canvasState.selectedPattern.details.name
     },
     isSelected(): boolean {

@@ -2,7 +2,7 @@ import { MutationTree } from 'vuex'
 import { patternList, PatternType } from '../patterns/patterns'
 
 export const state = () => ({
-  isRunning: false,
+  isRunning: true,
   mobileDrawModeOn: false,
   currentGeneration: 0,
   cellSize: 6,
