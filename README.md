@@ -1,6 +1,6 @@
 # Домашний проект для изучения Vue/Nuxt
 
-## Ссылка на [демо](https://euphonious-moonbeam-8d0fcc.netlify.app/)
+## Ссылка на [демо](https://iljorlov-vue.netlify.app/)
 
 ## Build Setup
 
