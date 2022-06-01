@@ -7,10 +7,10 @@ const PERLIN_ZWRAPB = 8
 const PERLIN_ZWRAP = 1 << PERLIN_ZWRAPB
 const PERLIN_SIZE = 4095
 
-let perlin_octaves = 4 // default to medium smooth
-let perlin_amp_falloff = 0.5 // 50% reduction/octave
+let perlinOctaves = 4 // default to medium smooth
+let perlinAmpFalloff = 0.5 // 50% reduction/octave
 
-const scaled_cosine = (i: number) => 0.5 * (1.0 - Math.cos(i * Math.PI))
+const scaledCosine = (i: number) => 0.5 * (1.0 - Math.cos(i * Math.PI))
 
 let perlin: number[] // will be initialized lazily by noise() or noiseSeed()
 
@@ -45,11 +45,11 @@ export const noise = (x: number, y = 0, z = 0) => {
 
   let n1, n2, n3
 
-  for (let o = 0; o < perlin_octaves; o++) {
+  for (let o = 0; o < perlinOctaves; o++) {
     let of = xi + (yi << PERLIN_YWRAPB) + (zi << PERLIN_ZWRAPB)
 
-    rxf = scaled_cosine(xf)
-    ryf = scaled_cosine(yf)
+    rxf = scaledCosine(xf)
+    ryf = scaledCosine(yf)
 
     n1 = perlin[of & PERLIN_SIZE]
     n1 += rxf * (perlin[(of + 1) & PERLIN_SIZE] - n1)
@@ -64,10 +64,10 @@ export const noise = (x: number, y = 0, z = 0) => {
     n3 += rxf * (perlin[(of + PERLIN_YWRAP + 1) & PERLIN_SIZE] - n3)
     n2 += ryf * (n3 - n2)
 
-    n1 += scaled_cosine(zf) * (n2 - n1)
+    n1 += scaledCosine(zf) * (n2 - n1)
 
     r += n1 * ampl
-    ampl *= perlin_amp_falloff
+    ampl *= perlinAmpFalloff
     xi <<= 1
     xf *= 2
     yi <<= 1
@@ -93,10 +93,10 @@ export const noise = (x: number, y = 0, z = 0) => {
 
 const noiseDetail = (lod: number, falloff: number) => {
   if (lod > 0) {
-    perlin_octaves = lod
+    perlinOctaves = lod
   }
   if (falloff > 0) {
-    perlin_amp_falloff = falloff
+    perlinAmpFalloff = falloff
   }
 }
 

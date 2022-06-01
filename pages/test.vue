@@ -1,10 +1,10 @@
 <template>
   <div>
-    <canvas id="wasm-gol-context" width="800" height="800" class="border" />
+    <canvas id="wasm-gol-context" width="1280" height="720" class="border" />
     <div>
       <div v-if="isDev">
         <button @click="toggleGreet">click</button>
-        <button @click="tick">tick</button>
+        <button @click="setPattern">setPattern</button>
         <button @click="drawGame">draw</button>
 
         <!-- <pre>{{ string }}</pre> -->
@@ -26,13 +26,20 @@ export default {
   data() {
     return {
       isDev: true,
-      numCols: 400,
-      numRows: 400,
+      cellSize: 1,
       // isDev: process.env.NODE_END === 'dev',
       universe: undefined as unknown as Universe,
       grid: [] as unknown as Uint8Array,
       ctx: null as CanvasRenderingContext2D | null,
     }
+  },
+  computed: {
+    numCols(): number {
+      return 720 / this.cellSize
+    },
+    numRows(): number {
+      return 1280 / this.cellSize
+    },
   },
   mounted() {
     const canvas = document.getElementById(
@@ -46,36 +53,27 @@ export default {
     toggleGreet() {
       import('../src/pkg/wasm_game_of_life').then(({ Universe }) => {
         // greet('Ilya')
-        const a = Universe.new(this.numCols, this.numRows)
+        const a = Universe.new(this.cellSize, 'wasm-gol-context')
         this.universe = a
-        this.grid = a.render()
+        // this.grid = a.render()
         // console.log(a.render())
       })
     },
     tick() {
       if (this.universe) {
         this.universe.tick()
-        this.grid = this.universe.render()
       }
     },
-
+    setPattern() {
+      if (this.universe) {
+        const a = new Uint8Array()
+        this.universe.set(a, 0, 0)
+      }
+    },
     drawGame() {
-      if (this.ctx) {
-        this.tick()
-
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
-        const cellSize = 800 / this.numCols
-
-        for (let col = 0; col < this.numCols; col++) {
-          for (let row = 0; row < this.numRows; row++) {
-            const xOffset = row * cellSize
-            const yOffset = col * cellSize
-            if (this.grid[col + this.numCols * row]) {
-              this.ctx.fillRect(xOffset, yOffset, cellSize, cellSize)
-            }
-          }
-        }
-
+      if (this.universe) {
+        this.universe.draw_grid()
+        this.universe.tick()
         window.requestAnimationFrame(this.drawGame)
       }
     },

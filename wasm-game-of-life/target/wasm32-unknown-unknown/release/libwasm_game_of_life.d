@@ -1,0 +1,1 @@
+/home/iqmanager/Desktop/vue/gol_vue/wasm-game-of-life/target/wasm32-unknown-unknown/release/libwasm_game_of_life.rlib: /home/iqmanager/Desktop/vue/gol_vue/wasm-game-of-life/src/lib.rs /home/iqmanager/Desktop/vue/gol_vue/wasm-game-of-life/src/utils.rs
