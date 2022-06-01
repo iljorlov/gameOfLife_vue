@@ -7,8 +7,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-./wasm-game-of-life/pkg
-./wasm-game-of-life/target
+./wasm-game-of-life/pkg/
+./wasm-game-of-life/target/
 
 # Runtime data
 pids
